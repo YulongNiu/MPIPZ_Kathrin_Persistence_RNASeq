@@ -1,0 +1,10 @@
+# ignore files
+*~
+.Rhistory
+.Rbuildignore
+.Rproj.user/
+.directory
+*.pyc
+*.DS_Store
+results/fastp/
+bamfiles/
