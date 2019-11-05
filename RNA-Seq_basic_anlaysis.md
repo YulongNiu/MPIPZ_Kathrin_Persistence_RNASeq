@@ -7,6 +7,7 @@
 - [1. Introduction](#1-introduction)
 - [2. Progress](#3-progress)
     - [2.1 Alignment](#21-alignment)
+    - [2.2 Cluster](#22-cluster)
 - [References](#references)
     
 <!-- content end -->
@@ -58,4 +59,15 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
 | L_mock_3      |  4873367 |  4873367 | 4769554 |  0.905 |    0.811 |
 | L_mock_4      |  5203180 |  5203180 | 4838003 |  0.897 |     0.82 |
 
+### 2.2 Cluster
+
+* PCA plot
+
+*Arabidopsis thaliana* Col-0
+
+![PCA_ath_raw](results/PCA_ath_raw.jpg)
+
+*Lotus japonicus* Gifu
+
+![PCA_lotus_raw](results/PCA_lotus_raw.jpg)
 

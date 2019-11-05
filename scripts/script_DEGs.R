@@ -10,7 +10,7 @@ checkPersis <- function(v, threshold) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 5, each = 4)) %>%
+    split(rep(1 : 4, each = 4)) %>%
     sapply(checkZeros, threshold) %>%
     all
 
@@ -43,10 +43,10 @@ setwd(wd)
 labelanno <- read_delim('../results/mapping.txt', delim = '\t') %>%
   dplyr::rename(ID = `library_number`, SampleAnno = `library_name`) %>%
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
-  filter(species %>% str_detect('Lj'))
+  filter(species %>% str_detect('Ath'))
 
 slabel <- labelanno$SampleAnno %>%
-  paste0('_lotus_kallisto')
+  paste0('_ath_kallisto')
 
 kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
@@ -70,13 +70,44 @@ degres %<>%
   estimateSizeFactors %>%
   counts(normalized = TRUE) %>%
   apply(1, checkPersis, 1) %>%
-  degres[., ] %>%
-  DESeq
+  degres[., ]
+
+save(degres, file = 'degres_condi_Mock_ath.RData')
+
+degres %<>% DESeq
 
 ## count transformation
 rld <- rlog(degres)
 ntd <- normTransform(degres)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cond <- degres %>%
+  resultsNames %>%
+  str_extract('(?<=condition_).*') %>%
+  .[!is.na(.)]
+
+resRaw <- lapply(cond,
+                 function(x) {
+                   degres %>%
+                     results(name = paste0('condition_', x)) %T>%
+                     summary %>%
+                     as_tibble %>%
+                     select(pvalue, padj, log2FoldChange) %>%
+                     rename_all(.funs = list(~paste0(x, '_', .)))
+                 }) %>%
+  bind_cols
+
+res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsFactors = FALSE) %>%
+  rownames_to_column(., var = 'ID') %>%
+  as_tibble %>%
+  bind_cols(resRaw) %>%
+  inner_join(anno, by = 'ID') %>%
+  select(ID, Gene : Description, C_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
+  arrange(fullSC_vs_Mock_padj)
+
+write_csv(res, '../results/SynCom_vs_Mock_ath_k.csv')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +135,7 @@ rldData %<>% .[rl, ]
 ## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 10) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(5, name = 'Set1'))
+cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(4, name = 'Set1'))
 
 ## 1 - 2 C
 pca <- prcomp(t(rldData))
@@ -119,8 +150,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = levels(cols))
-ggsave('PCA_1stadd_sva.pdf', width = 15, height = 12)
-ggsave('PCA_1stadd_sva.jpg', width = 15, height = 12)
+ggsave('../results/PCA_ath_raw.pdf', width = 15, height = 12)
+ggsave('../results/PCA_ath_raw.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################################
