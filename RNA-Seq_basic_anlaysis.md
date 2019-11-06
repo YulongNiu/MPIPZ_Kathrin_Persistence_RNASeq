@@ -69,7 +69,7 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
 
 ![PCA_ath_raw](results/PCA_ath_raw.jpg)
 
-* kmeans cluster
+* K-means cluster
 
 ![kmeans_sse](results/kmeans_sse_ath.jpg)
 
@@ -79,7 +79,7 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
   
 ![kmeans_10_gene_ath](results/kmeans_10_genes_ath.jpg)
 
-* trait
+* Trait
 
 ```
   bacterial AtSC LjSC
@@ -91,17 +91,15 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
 
 ![kmeans_10_trait_ath](results/kmeans_10_trait_ath.jpg)
 
-* heatmap
+* Heatmap
 
 ![kmeans_10_heatmap_merge_ath](results/kmeans_10_heatmap_merge_ath.jpg)
 
-
-
 ##### 2.2.2 Lotus japonicus
 
-* PCA plot
-
 Lotus japonicus* Gifu
+
+* PCA plot
 
 ![PCA_lotus_raw](results/PCA_lotus_raw.jpg)
 
