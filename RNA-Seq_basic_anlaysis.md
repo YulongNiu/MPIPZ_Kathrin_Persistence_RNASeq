@@ -67,7 +67,14 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
 
 * PCA plot
 
+PCA plot of raw data
+
 ![PCA_ath_raw](results/PCA_ath_raw.jpg)
+
+
+PCA plot of limma correction data (`1` and `2 3 4`)
+
+![PCA_ath_limma](results/PCA_ath_limma.jpg)
 
 * K-means cluster
 
