@@ -125,6 +125,19 @@ athout <- 'nohup_align.out' %>%
   mutate(H_ath = round(hmap/trimfq, 3), K_ath = round(kmap/trimfq, 3)) %>%
   select(c(-hmap, -kmap, -org))
 
+lotusout <- 'nohup_align_lotus.out' %>%
+  readLines %>%
+  KHoutput(type = 'PE', org = 'lotus') %>%
+  mutate(H_ath = round(hmap/trimfq, 3), K_ath = round(kmap/trimfq, 3)) %>%
+  select(c(-hmap, -kmap, -org))
+
+athout %<>%
+  mutate(H_ath = paste(athout$H_ath[-1:-16], c(lotusout$H_ath), sep = '/') %>%
+           c(athout$H_ath[1:16], .)) %>%
+  mutate(K_ath = paste(athout$K_ath[-1:-16], c(lotusout$K_ath), sep = '/') %>%
+           c(athout$K_ath[1:16], .)) %>%
+  rename(H_plant = H_ath, K_plant = K_ath)
+
 ## raw reads
 rawrd <- read_csv('raw_seqnumber.csv')
 
