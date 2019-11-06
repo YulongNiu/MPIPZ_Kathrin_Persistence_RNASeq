@@ -28,6 +28,8 @@ library('readr')
 library('dplyr')
 library('stringr')
 library('foreach')
+library('GUniFrac')
+library('ParaMisc')
 
 anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
                  col_types = cols(Chromosome = col_character())) %>%
@@ -43,14 +45,21 @@ setwd(wd)
 labelanno <- read_delim('../results/mapping.txt', delim = '\t') %>%
   dplyr::rename(ID = `library_number`, SampleAnno = `library_name`) %>%
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
-  filter(species %>% str_detect('Ath'))
+  filter(species %>% str_detect('Lj'))
 
 slabel <- labelanno$SampleAnno %>%
-  paste0('_ath_kallisto')
+  paste0('_lotus_kallisto')
 
 kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
   tximport(type = 'kallisto', txOut = TRUE)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~subsample~~~~~~~~~~~~~~~~~~~~~~~~~~
+tmp1 <- kres$counts %>%
+  t %>%
+  Rarefy %>%
+  .$otu.tab.rff
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,8 +118,14 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsF
 write_csv(res, '../results/SynCom_vs_Mock_ath_k.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+library('pheatmap')
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pheatmap(assay(ntd),
+         show_rownames=FALSE)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library('directlabels')
 library('ggplot2')
 library('RColorBrewer')
@@ -129,17 +144,20 @@ rldData %<>% .[rl, ]
 
 ## batch correction limma
 ## rldData %<>% removeBatchEffect(rep(1 : 4, 4) %>% factor)
-rldData %<>% removeBatchEffect(c(1, 1, 2, 2,
-                                 1, 2, 2, 2,
-                                 1, 1, 2, 2,
-                                 1, 2, 2, 2) %>% factor)
 
-## ## batch correction sva
-## modcombat <- model.matrix(~1, data = sampleTable)
-## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 10) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
+## batch correction limma - lotus
+cutMat <- CutSeqEqu(ncol(rld), 4)
+for (i in seq_len(ncol(cutMat))) {
+  eachCols <- cutMat[1, i] : cutMat[2, i]
+  rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
+}
+
+## batch correction sva
+modcombat <- model.matrix(~1, data = sampleTable)
+rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 5) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(4, name = 'Set1'))
+cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(5, name = 'Set1'))
 
 ## 1 - 2 C
 pca <- prcomp(t(rldData))
@@ -154,8 +172,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = levels(cols))
-ggsave('../results/PCA_ath_raw.pdf', width = 15, height = 12)
-ggsave('../results/PCA_ath_raw.jpg', width = 15, height = 12)
+ggsave('../results/PCA_lotus_limma.pdf', width = 15, height = 12)
+ggsave('../results/PCA_lotus_limma.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################################

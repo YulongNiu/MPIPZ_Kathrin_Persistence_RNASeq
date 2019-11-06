@@ -101,5 +101,12 @@ Lotus japonicus* Gifu
 
 * PCA plot
 
+PCA plot of raw data
+
 ![PCA_lotus_raw](results/PCA_lotus_raw.jpg)
+
+
+PCA plot of limma correction data (`1 2` and `3 4`)
+
+![PCA_lotus_limma](results/PCA_lotus_limma.jpg)
 
