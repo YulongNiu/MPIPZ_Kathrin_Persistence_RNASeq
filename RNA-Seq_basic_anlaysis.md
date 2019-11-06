@@ -61,13 +61,47 @@ Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analy
 
 ### 2.2 Cluster
 
-* PCA plot
+#### 2.2.1 Arabidopsis thaliana
 
 *Arabidopsis thaliana* Col-0
 
+* PCA plot
+
 ![PCA_ath_raw](results/PCA_ath_raw.jpg)
 
-*Lotus japonicus* Gifu
+* kmeans cluster
+
+![kmeans_sse](results/kmeans_sse_ath.jpg)
+
+![kmeans_AIC](results/kmeans_AIC_ath.jpg)
+
+![kmeans_10_ath](results/kmeans_10_ath.jpg)
+  
+![kmeans_10_gene_ath](results/kmeans_10_genes_ath.jpg)
+
+* trait
+
+```
+  bacterial AtSC LjSC
+         1    0    0
+         1    1    0
+         1    0    1
+         0    0    0
+```
+
+![kmeans_10_trait_ath](results/kmeans_10_trait_ath.jpg)
+
+* heatmap
+
+![kmeans_10_heatmap_merge_ath](results/kmeans_10_heatmap_merge_ath.jpg)
+
+
+
+##### 2.2.2 Lotus japonicus
+
+* PCA plot
+
+Lotus japonicus* Gifu
 
 ![PCA_lotus_raw](results/PCA_lotus_raw.jpg)
 
