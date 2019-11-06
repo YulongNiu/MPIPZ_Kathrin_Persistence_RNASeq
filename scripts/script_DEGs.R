@@ -129,6 +129,10 @@ rldData %<>% .[rl, ]
 
 ## batch correction limma
 ## rldData %<>% removeBatchEffect(rep(1 : 4, 4) %>% factor)
+rldData %<>% removeBatchEffect(c(1, 1, 2, 2,
+                                 1, 2, 2, 2,
+                                 1, 1, 2, 2,
+                                 1, 2, 2, 2) %>% factor)
 
 ## ## batch correction sva
 ## modcombat <- model.matrix(~1, data = sampleTable)

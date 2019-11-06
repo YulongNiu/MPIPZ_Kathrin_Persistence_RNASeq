@@ -23,21 +23,23 @@ for i in ${fqnames[@]}; do
 
     if [ ${i%%_*} = "C" ]; then
         SPECIES='ath'
+        REF_INDEX_PATH=${REF_PATH}/${SPECIES}
     elif [ ${i%%_*} = "L" ]; then
         SPECIES='lotus'
+        REF_INDEX_PATH=${REF_PATH}/${SPECIES}_gifu_collaborator_v1.2
     fi
 
     echo "===================================="
     echo "Kallisto using ${SPECIES} cDNA for ${i}."
     ${KALLISTO_PATH}/kallisto quant \
                     -t ${CORENUM} \
-                    -i ${REF_PATH}/${SPECIES}/${SPECIES}.kindex \
+                    -i ${REF_INDEX_PATH}/${SPECIES}.kindex \
                     -o ${ALIGN_PATH}/${i}_${SPECIES}_kallisto \
                     ${CLEAN_PATH}/${i}_R1.fq.gz ${CLEAN_PATH}/${i}_R2.fq.gz
 
     echo "HISAT2 using ${SPECIES} genome for ${i}."
     ${HISAT2_PATH}/hisat2 -p ${CORENUM} \
-                  -x ${REF_PATH}/${SPECIES}/${SPECIES}ht2index/genome \
+                  -x ${REF_INDEX_PATH}/${SPECIES}ht2index/genome \
                   -1 ${CLEAN_PATH}/${i}_R1.fq.gz \
                   -2 ${CLEAN_PATH}/${i}_R2.fq.gz \
                   -S ${ALIGN_PATH}/${i}_${SPECIES}_hisat2.sam
