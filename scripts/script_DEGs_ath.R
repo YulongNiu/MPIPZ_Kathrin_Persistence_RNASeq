@@ -57,8 +57,6 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
 
-condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
-
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
 rownames(sampleTable) <- colnames(kres$counts)
 
@@ -73,7 +71,7 @@ degres %<>%
   apply(1, checkPersis, 1) %>%
   degres[., ]
 
-save(degres, file = '../results/degres_condi_Mock_lotus.RData')
+save(degres, file = '../results/degres_condi_Mock_ath.RData')
 
 degres %<>% DESeq
 
@@ -134,17 +132,7 @@ rl <- apply(rldData, 1, function(x){
 })
 rldData %<>% .[rl, ]
 
-## batch correction limma
-## rldData %<>% removeBatchEffect(rep(1 : 4, 4) %>% factor)
-
-## ## batch correction limma - lotus
-## cutMat <- CutSeqEqu(ncol(rld), 4)
-## for (i in seq_len(ncol(cutMat))) {
-##   eachCols <- cutMat[1, i] : cutMat[2, i]
-##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
-## }
-
-## batch correction limma - lotus
+## batch correction limma - ath
 cutMat <- CutSeqEqu(ncol(rld), 4)
 for (i in seq_len(ncol(cutMat))) {
   eachCols <- cutMat[1, i] : cutMat[2, i]
