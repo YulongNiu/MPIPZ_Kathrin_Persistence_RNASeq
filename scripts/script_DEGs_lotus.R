@@ -79,6 +79,7 @@ degres %<>% DESeq
 ## count transformation
 rld <- rlog(degres)
 ntd <- normTransform(degres)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~subsample~~~~~~~~~~~~~~~~~~~~~~~~~~
 tmp1 <- kres$counts %>%
@@ -87,7 +88,6 @@ tmp1 <- kres$counts %>%
   .$otu.tab.rff
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cond <- degres %>%
@@ -181,8 +181,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = cols[colorIdx])
-ggsave('../results/PCA_ath_limma_noAtSCMloti.pdf', width = 15, height = 12)
-ggsave('../results/PCA_ath_limma_noAtSCMloti.jpg', width = 15, height = 12)
+ggsave('../results/PCA_lotus_limma.pdf', width = 15, height = 12)
+ggsave('../results/PCA_lotus_limma.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################################
