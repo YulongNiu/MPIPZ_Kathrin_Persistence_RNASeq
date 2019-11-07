@@ -10,7 +10,7 @@ checkPersis <- function(v, threshold) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 4, each = 4)) %>%
+    split(rep(1 : 5, each = 4)) %>%
     sapply(checkZeros, threshold) %>%
     all
 
@@ -28,7 +28,6 @@ library('readr')
 library('dplyr')
 library('stringr')
 library('foreach')
-library('GUniFrac')
 library('ParaMisc')
 
 anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
@@ -45,26 +44,17 @@ setwd(wd)
 labelanno <- read_delim('../results/mapping.txt', delim = '\t') %>%
   dplyr::rename(ID = `library_number`, SampleAnno = `library_name`) %>%
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
-  filter(species %>% str_detect('Ath'))
+  filter(species %>% str_detect('Lj'))
 
 slabel <- labelanno$SampleAnno %>%
-  paste0('_ath_kallisto')
+  paste0('_lotus_kallisto')
 
 kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
   tximport(type = 'kallisto', txOut = TRUE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~subsample~~~~~~~~~~~~~~~~~~~~~~~~~~
-## tmp1 <- kres$counts %>%
-##   t %>%
-##   Rarefy %>%
-##   .$otu.tab.rff
-## ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
-
 condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
 
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
@@ -143,20 +133,11 @@ rl <- apply(rldData, 1, function(x){
 rldData %<>% .[rl, ]
 
 ## batch correction limma
-## rldData %<>% removeBatchEffect(rep(1 : 4, 4) %>% factor)
-
-## ## batch correction limma - lotus
-## cutMat <- CutSeqEqu(ncol(rld), 4)
-## for (i in seq_len(ncol(cutMat))) {
-##   eachCols <- cutMat[1, i] : cutMat[2, i]
-##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
-## }
-
 ## batch correction limma - lotus
 cutMat <- CutSeqEqu(ncol(rld), 4)
 for (i in seq_len(ncol(cutMat))) {
   eachCols <- cutMat[1, i] : cutMat[2, i]
-  rldData[, eachCols] %<>% removeBatchEffect(c(1, 2, 2, 2) %>% factor)
+  rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
 }
 
 ## ## batch correction sva
@@ -164,23 +145,36 @@ for (i in seq_len(ncol(cutMat))) {
 ## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 5) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(4, name = 'Set1'))
+cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(5, name = 'Set1'))
+levels(cols) <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
+
+## full
+sampleIdx <- 1:20
+colorIdx <- 1:5
+
+## without AtSC
+sampleIdx <- (1:20)[-5:-8]
+colorIdx <- (1:5)[-2]
+
+## without AtSCMloti
+sampleIdx <- (1:20)[-9:-12]
+colorIdx <- (1:5)[-3]
 
 ## 1 - 2 C
-pca <- prcomp(t(rldData))
+pca <- prcomp(t(rldData[, sampleIdx]))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
-pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[, 1], ID = rownames(colData(rld)))
+pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx])
 ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
-  scale_colour_manual(values = levels(cols))
-ggsave('../results/PCA_ath_limma.pdf', width = 15, height = 12)
-ggsave('../results/PCA_ath_limma.jpg', width = 15, height = 12)
+  scale_colour_manual(values = levels(cols)[colorIdx])
+ggsave('../results/PCA_ath_limma_noAtSCMloti.pdf', width = 15, height = 12)
+ggsave('../results/PCA_ath_limma_noAtSCMloti.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ######################################################################

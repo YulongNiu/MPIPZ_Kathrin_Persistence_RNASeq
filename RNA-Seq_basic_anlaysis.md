@@ -117,3 +117,7 @@ PCA plot of limma correction data (`1 2` and `3 4`)
 
 ![PCA_lotus_limma](results/PCA_lotus_limma.jpg)
 
+![PCA_lotus_noAtSC_limma](results/PCA_lotus_limma_noAtSC.jpg)
+
+![PCA_lotus_noAtSCMloti_limma](results/PCA_lotus_limma_noAtSCMloti.jpg)
+
