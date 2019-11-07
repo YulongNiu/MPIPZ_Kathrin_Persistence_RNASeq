@@ -145,8 +145,7 @@ for (i in seq_len(ncol(cutMat))) {
 ## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 5) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(5, name = 'Set1'))
-levels(cols) <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
+cols <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
 
 ## full
 sampleIdx <- 1:20
@@ -154,11 +153,11 @@ colorIdx <- 1:5
 
 ## without AtSC
 sampleIdx <- (1:20)[-5:-8]
-colorIdx <- (1:5)[-2]
+colorIdx <- (1:5)[-3]
 
 ## without AtSCMloti
 sampleIdx <- (1:20)[-9:-12]
-colorIdx <- (1:5)[-3]
+colorIdx <- (1:5)[-4]
 
 ## 1 - 2 C
 pca <- prcomp(t(rldData[, sampleIdx]))
@@ -172,7 +171,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
-  scale_colour_manual(values = levels(cols)[colorIdx])
+  scale_colour_manual(values = cols[colorIdx])
 ggsave('../results/PCA_ath_limma_noAtSCMloti.pdf', width = 15, height = 12)
 ggsave('../results/PCA_ath_limma_noAtSCMloti.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
