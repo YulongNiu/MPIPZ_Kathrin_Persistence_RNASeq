@@ -116,6 +116,8 @@ svobj$sv %>%
   geom_point() +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90))
+ggsave('../results/auto_lotus_sv.jpg')
+ggsave('../results/auto_lotus_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -206,7 +208,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = cols[colorIdx])
-ggsave('../results/PCA_lotus_limma.pdf', width = 15, height = 12)
-ggsave('../results/PCA_lotus_limma.jpg', width = 15, height = 12)
+ggsave('../results/PCA_lotus_sva.pdf', width = 15, height = 12)
+ggsave('../results/PCA_lotus_sva.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

@@ -107,10 +107,9 @@ svobj$sv %>%
   ggplot(aes(sample, value, colour = sv, group = group)) +
   geom_point() +
   geom_line() +
-
   theme(axis.text.x = element_text(angle = 90))
-ggsave('../results/auto_sv.jpg')
-ggsave('../results/auto_sv.pdf')
+ggsave('../results/auto_ath_sv.jpg')
+ggsave('../results/auto_ath_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +162,7 @@ dat <- rld %>%
 group <- sampleTable$condition
 design <- model.matrix(~ group)
 rldData <- dat %>%
-  removeBatchEffect(covariates = svobj$sv,
+  removeBatchEffect(covariates = svseq$sv,
                     design = design)
 
 ## ## batch correction limma - ath
