@@ -89,7 +89,7 @@ tmp1 <- kres$counts %>%
 library('sva')
 library('ggplot2')
 
-## dat <- counts(degres, normalized = TRUE)
+## manual detect surrogate variance
 dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
@@ -98,10 +98,11 @@ mod0 <- model.matrix(~ 1, colData(degres))
 svnum <- 4
 svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
+## auto detect sv
 svobj <- sva(dat, mod, mod0)
+svnum <- svobj$sv %>% ncol
 
-## surrogate variance
-svseq$sv %>%
+svobj$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
   as_tibble %>%
   gather(key = 'sv', value = 'value') %>%
@@ -110,7 +111,8 @@ svseq$sv %>%
            rep(svnum) %>%
            as.character,
          sample = rep(colnames(degres), svnum)) %>%
-  ggplot(aes(sample, value, colour = sv, group = sv)) +
+  mutate(group = paste(sv, condition, sep = '_')) %>%
+  ggplot(aes(sample, value, colour = sv, group = group)) +
   geom_point() +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90))

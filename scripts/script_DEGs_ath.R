@@ -81,7 +81,7 @@ ntd <- normTransform(degres)
 library('sva')
 library('ggplot2')
 
-## dat <- counts(degres, normalized = TRUE)
+## manual detect surrogate variance
 dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
@@ -91,9 +91,10 @@ svnum <- 4
 svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
 svobj <- sva(dat, mod, mod0)
+svnum <- svobj$sv %>% ncol
 
-## surrogate variance
-svseq$sv %>%
+## auto detect sv
+svobj$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
   as_tibble %>%
   gather(key = 'sv', value = 'value') %>%
@@ -102,10 +103,14 @@ svseq$sv %>%
            rep(svnum) %>%
            as.character,
          sample = rep(colnames(degres), svnum)) %>%
-  ggplot(aes(sample, value, colour = sv, group = sv)) +
+  mutate(group = paste(sv, condition, sep = '_')) %>%
+  ggplot(aes(sample, value, colour = sv, group = group)) +
   geom_point() +
   geom_line() +
+
   theme(axis.text.x = element_text(angle = 90))
+ggsave('../results/auto_sv.jpg')
+ggsave('../results/auto_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -184,7 +189,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = levels(cols))
-ggsave('../results/PCA_ath_limma.pdf', width = 15, height = 12)
-ggsave('../results/PCA_ath_limma.jpg', width = 15, height = 12)
+ggsave('../results/PCA_ath_sva.pdf', width = 15, height = 12)
+ggsave('../results/PCA_ath_sva.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

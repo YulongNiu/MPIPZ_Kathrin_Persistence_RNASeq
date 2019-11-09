@@ -71,6 +71,11 @@ PCA plot of raw data
 
 ![PCA_ath_raw](results/PCA_ath_raw.jpg)
 
+PCA plot of auto sva corrected data
+
+![auto_sv](results/auto_sv.jpg)
+
+![PCA_ath_sva](results/PCA_ath_sva.jpg)
 
 PCA plot of limma correction data (`1` and `2 3 4`)
 
