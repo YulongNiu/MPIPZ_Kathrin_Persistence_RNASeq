@@ -141,13 +141,18 @@ rl <- apply(rldData, 1, function(x){
 })
 rldData %<>% .[rl, ]
 
-## batch correction limma
-## batch correction limma - lotus
-cutMat <- CutSeqEqu(ncol(rld), 4)
-for (i in seq_len(ncol(cutMat))) {
-  eachCols <- cutMat[1, i] : cutMat[2, i]
-  rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
-}
+## ## batch correction limma - lotus
+## cutMat <- CutSeqEqu(ncol(rld), 4)
+## for (i in seq_len(ncol(cutMat))) {
+##   eachCols <- cutMat[1, i] : cutMat[2, i]
+##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
+## }
+
+group <- sampleTable$condition
+## batch <- rep(1 : 10, each = 2)
+batch <- rep(c(1, 1, 2, 2), 5)
+design <- model.matrix(~ group)
+rldData %<>% removeBatchEffect(batch = batch, design = design)
 
 ## ## batch correction sva
 ## modcombat <- model.matrix(~1, data = sampleTable)
@@ -160,13 +165,13 @@ cols <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
 sampleIdx <- 1:20
 colorIdx <- 1:5
 
-## without AtSC
-sampleIdx <- (1:20)[-5:-8]
-colorIdx <- (1:5)[-3]
+## ## without AtSC
+## sampleIdx <- (1:20)[-5:-8]
+## colorIdx <- (1:5)[-3]
 
-## without AtSCMloti
-sampleIdx <- (1:20)[-9:-12]
-colorIdx <- (1:5)[-4]
+## ## without AtSCMloti
+## sampleIdx <- (1:20)[-9:-12]
+## colorIdx <- (1:5)[-4]
 
 ## 1 - 2 C
 pca <- prcomp(t(rldData[, sampleIdx]))
@@ -185,4 +190,13 @@ ggsave('../results/PCA_lotus_limma.pdf', width = 15, height = 12)
 ggsave('../results/PCA_lotus_limma.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect~~~~~~~~~~~~~~~~~~~~~
+library('sva')
+dat <- counts(degres, normalized = TRUE)
+idx <- rowMeans(dat) > 1
+dat <- dat[idx, ]
+mod <- model.matrix(~ condition, colData(degres))
+mod0 <- model.matrix(~ 1, colData(degres))
+svseq <- svaseq(dat, mod, mod0, n.sv = 3)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

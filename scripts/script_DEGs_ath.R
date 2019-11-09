@@ -23,10 +23,7 @@ library('tximport')
 library('rhdf5')
 library('magrittr')
 library('DESeq2')
-library('tibble')
-library('readr')
-library('dplyr')
-library('stringr')
+library('tidyverse')
 library('foreach')
 library('ParaMisc')
 
@@ -62,7 +59,7 @@ rownames(sampleTable) <- colnames(kres$counts)
 
 sampleTable$condition %<>% relevel(ref = 'Mock')
 
-degres <- DESeqDataSetFromTximport(kres, sampleTable, ~condition)
+degres <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
 
 ## remove 0|0|0|x and |0|0|0|0
 degres %<>%
@@ -80,8 +77,37 @@ rld <- rlog(degres)
 ntd <- normTransform(degres)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect~~~~~~~~~~~~~~~~~~~~~
+library('sva')
+library('ggplot2')
+
+## dat <- counts(degres, normalized = TRUE)
+dat <- rld %>%
+  assay %>%
+  {.[rowMeans(.) > 1, ]}
+mod <- model.matrix(~ condition, colData(degres))
+mod0 <- model.matrix(~ 1, colData(degres))
+svnum <- 4
+svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
+
+## surrogate variance
+svseq$sv %>%
+  set_colnames(paste0('sv', seq_len(svnum))) %>%
+  as_tibble %>%
+  gather(key = 'sv', value = 'value') %>%
+  mutate(condition = colData(degres) %>%
+           .$condition %>%
+           rep(svnum) %>%
+           as.character,
+         sample = rep(colnames(degres), svnum)) %>%
+  ggplot(aes(sample, value, colour = sv, group = sv)) +
+  geom_point() +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cond <- degres %>%
+ cond <- degres %>%
   resultsNames %>%
   str_extract('(?<=condition_).*') %>%
   .[!is.na(.)]
@@ -111,7 +137,7 @@ write_csv(res, '../results/SynCom_vs_Mock_ath_k.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library('pheatmap')
 
-pheatmap(assay(ntd),
+pheatmap(rldData,
          show_rownames=FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -123,21 +149,41 @@ library('limma')
 library('sva')
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## remove low count
-thres <- 0
-rldData <- assay(rld)
+dat <- rld %>%
+  assay %>%
+  {.[rowMeans(.) > 1, ]}
 
-rl <- apply(rldData, 1, function(x){
-  return(sum(x > thres) == length(x))
-})
-rldData %<>% .[rl, ]
+group <- sampleTable$condition
+design <- model.matrix(~ group)
+rldData <- dat %>%
+  removeBatchEffect(covariates = svseq$sv[, c(1, 2, 4)],
+                    design = design)
 
-## batch correction limma - ath
-cutMat <- CutSeqEqu(ncol(rld), 4)
-for (i in seq_len(ncol(cutMat))) {
-  eachCols <- cutMat[1, i] : cutMat[2, i]
-  rldData[, eachCols] %<>% removeBatchEffect(c(1, 2, 2, 2) %>% factor)
-}
+## rldData %<>% removeBatchEffect(c(c(1, 2, 2, 2),
+##                                  c(3, 4, 4, 4),
+##                                  c(5, 6, 6, 6),
+##                                  c(7, 8, 8, 8)) %>% factor)
+
+## rldData %<>% removeBatchEffect(c(c(1, 1, 2, 2),
+##                                  c(1, 2, 2, 2),
+##                                  c(1, 1, 2, 2),
+##                                  c(1, 2, 2, 2))%>% factor)
+
+## group <- sampleTable$condition
+## batch <- (1:4) %>% rep(4) %>% factor
+## batch <- c(c(1, 1, 2, 2),
+##   c(3, 4, 4, 4),
+##   c(5, 5, 6, 6),
+##   c(7, 8, 8, 8)) %>% factor
+## design <- model.matrix(~ group)
+## rldData %<>% removeBatchEffect(batch = batch, desgin = design)
+
+## ## batch correction limma - ath
+## cutMat <- CutSeqEqu(ncol(rld), 4)
+## for (i in seq_len(ncol(cutMat))) {
+##   eachCols <- cutMat[1, i] : cutMat[2, i]
+##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 2, 2, 2) %>% factor)
+## }
 
 ## ## batch correction sva
 ## modcombat <- model.matrix(~1, data = sampleTable)
@@ -162,5 +208,4 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
 ggsave('../results/PCA_ath_limma.pdf', width = 15, height = 12)
 ggsave('../results/PCA_ath_limma.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 ######################################################################

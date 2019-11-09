@@ -104,7 +104,7 @@ PCA plot of limma correction data (`1` and `2 3 4`)
 
 ##### 2.2.2 Lotus japonicus
 
-Lotus japonicus* Gifu
+*Lotus japonicus* Gifu
 
 * PCA plot
 
