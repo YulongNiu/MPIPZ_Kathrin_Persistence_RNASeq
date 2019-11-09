@@ -23,10 +23,7 @@ library('tximport')
 library('rhdf5')
 library('magrittr')
 library('DESeq2')
-library('tibble')
-library('readr')
-library('dplyr')
-library('stringr')
+library('tidyverse')
 library('foreach')
 library('ParaMisc')
 library('GUniFrac')
@@ -88,6 +85,36 @@ tmp1 <- kres$counts %>%
   .$otu.tab.rff
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect~~~~~~~~~~~~~~~~~~~~~
+library('sva')
+library('ggplot2')
+
+## dat <- counts(degres, normalized = TRUE)
+dat <- rld %>%
+  assay %>%
+  {.[rowMeans(.) > 1, ]}
+mod <- model.matrix(~ condition, colData(degres))
+mod0 <- model.matrix(~ 1, colData(degres))
+svnum <- 4
+svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
+
+svobj <- sva(dat, mod, mod0)
+
+## surrogate variance
+svseq$sv %>%
+  set_colnames(paste0('sv', seq_len(svnum))) %>%
+  as_tibble %>%
+  gather(key = 'sv', value = 'value') %>%
+  mutate(condition = colData(degres) %>%
+           .$condition %>%
+           rep(svnum) %>%
+           as.character,
+         sample = rep(colnames(degres), svnum)) %>%
+  ggplot(aes(sample, value, colour = sv, group = sv)) +
+  geom_point() +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cond <- degres %>%
@@ -132,14 +159,15 @@ library('limma')
 library('sva')
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## remove low count
-thres <- 0
-rldData <- assay(rld)
+dat <- rld %>%
+  assay %>%
+  {.[rowMeans(.) > 1, ]}
 
-rl <- apply(rldData, 1, function(x){
-  return(sum(x > thres) == length(x))
-})
-rldData %<>% .[rl, ]
+group <- sampleTable$condition
+design <- model.matrix(~ group)
+rldData <- dat %>%
+  removeBatchEffect(covariates = svobj$sv,
+                    design = design)
 
 ## ## batch correction limma - lotus
 ## cutMat <- CutSeqEqu(ncol(rld), 4)
@@ -147,16 +175,6 @@ rldData %<>% .[rl, ]
 ##   eachCols <- cutMat[1, i] : cutMat[2, i]
 ##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 1, 2, 2) %>% factor)
 ## }
-
-group <- sampleTable$condition
-## batch <- rep(1 : 10, each = 2)
-batch <- rep(c(1, 1, 2, 2), 5)
-design <- model.matrix(~ group)
-rldData %<>% removeBatchEffect(batch = batch, design = design)
-
-## ## batch correction sva
-## modcombat <- model.matrix(~1, data = sampleTable)
-## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 5) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 cols <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
@@ -189,14 +207,4 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
 ggsave('../results/PCA_lotus_limma.pdf', width = 15, height = 12)
 ggsave('../results/PCA_lotus_limma.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect~~~~~~~~~~~~~~~~~~~~~
-library('sva')
-dat <- counts(degres, normalized = TRUE)
-idx <- rowMeans(dat) > 1
-dat <- dat[idx, ]
-mod <- model.matrix(~ condition, colData(degres))
-mod0 <- model.matrix(~ 1, colData(degres))
-svseq <- svaseq(dat, mod, mod0, n.sv = 3)
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

@@ -90,6 +90,8 @@ mod0 <- model.matrix(~ 1, colData(degres))
 svnum <- 4
 svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
+svobj <- sva(dat, mod, mod0)
+
 ## surrogate variance
 svseq$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
@@ -156,27 +158,8 @@ dat <- rld %>%
 group <- sampleTable$condition
 design <- model.matrix(~ group)
 rldData <- dat %>%
-  removeBatchEffect(covariates = svseq$sv[, c(1, 2, 4)],
+  removeBatchEffect(covariates = svobj$sv,
                     design = design)
-
-## rldData %<>% removeBatchEffect(c(c(1, 2, 2, 2),
-##                                  c(3, 4, 4, 4),
-##                                  c(5, 6, 6, 6),
-##                                  c(7, 8, 8, 8)) %>% factor)
-
-## rldData %<>% removeBatchEffect(c(c(1, 1, 2, 2),
-##                                  c(1, 2, 2, 2),
-##                                  c(1, 1, 2, 2),
-##                                  c(1, 2, 2, 2))%>% factor)
-
-## group <- sampleTable$condition
-## batch <- (1:4) %>% rep(4) %>% factor
-## batch <- c(c(1, 1, 2, 2),
-##   c(3, 4, 4, 4),
-##   c(5, 5, 6, 6),
-##   c(7, 8, 8, 8)) %>% factor
-## design <- model.matrix(~ group)
-## rldData %<>% removeBatchEffect(batch = batch, desgin = design)
 
 ## ## batch correction limma - ath
 ## cutMat <- CutSeqEqu(ncol(rld), 4)
@@ -184,10 +167,6 @@ rldData <- dat %>%
 ##   eachCols <- cutMat[1, i] : cutMat[2, i]
 ##   rldData[, eachCols] %<>% removeBatchEffect(c(1, 2, 2, 2) %>% factor)
 ## }
-
-## ## batch correction sva
-## modcombat <- model.matrix(~1, data = sampleTable)
-## rldData %<>% ComBat(dat = ., batch = rep(rep(1 : 4, 5) %>% factor) %>% factor, mod = modcombat, par.prior = TRUE, prior.plots = FALSE)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(4, name = 'Set1'))
