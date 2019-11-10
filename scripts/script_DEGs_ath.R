@@ -34,7 +34,6 @@ anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno
 
 
 ##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data'
 setwd(wd)
 
@@ -52,6 +51,8 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/')
+
 condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
 
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
@@ -61,14 +62,12 @@ sampleTable$condition %<>% relevel(ref = 'Mock')
 
 degres <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
 
-## remove 0|0|0|x and |0|0|0|0
+## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
 degres %<>%
   estimateSizeFactors %>%
   counts(normalized = TRUE) %>%
   apply(1, checkPersis, 1) %>%
   degres[., ]
-
-save(degres, file = '../results/degres_condi_Mock_ath.RData')
 
 degres %<>% DESeq
 
@@ -81,19 +80,20 @@ ntd <- normTransform(degres)
 library('sva')
 library('ggplot2')
 
-## manual detect surrogate variance
 dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
-mod <- model.matrix(~ condition, colData(degres))
-mod0 <- model.matrix(~ 1, colData(degres))
+mod <- model.matrix(~condition, colData(degres))
+mod0 <- model.matrix(~1, colData(degres))
+
+## manual detect surrogate variance
 svnum <- 4
 svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
+## auto detect sv
 svobj <- sva(dat, mod, mod0)
 svnum <- svobj$sv %>% ncol
 
-## auto detect sv
 svobj$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
   as_tibble %>%
@@ -108,12 +108,17 @@ svobj$sv %>%
   geom_point() +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90))
-ggsave('../results/auto_ath_sv.jpg')
-ggsave('../results/auto_ath_sv.pdf')
+ggsave('auto_ath_sv.jpg')
+ggsave('auto_ath_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- cond <- degres %>%
+degres$sv1 <- svobj$sv[, 1]
+degres$sv2 <- svobj$sv[, 2]
+degres$sv3 <- svobj$sv[, 3]
+design(degres) <- ~sv1 + sv2 + sv3 + condition
+
+cond <- degres %>%
   resultsNames %>%
   str_extract('(?<=condition_).*') %>%
   .[!is.na(.)]
@@ -129,7 +134,7 @@ resRaw <- lapply(cond,
                  }) %>%
   bind_cols
 
-res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsFactors = FALSE) %>%
+res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsFactors = FALSE) %>%
   rownames_to_column(., var = 'ID') %>%
   as_tibble %>%
   bind_cols(resRaw) %>%
@@ -137,7 +142,8 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsF
   select(ID, Gene : Description, C_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
   arrange(fullSC_vs_Mock_padj)
 
-write_csv(res, '../results/SynCom_vs_Mock_ath_k.csv')
+write_csv(res, 'SynCom_vs_Mock_ath_sva_k.csv')
+save(degres, rldData, file = 'degres_condi_Mock_ath.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,7 +168,7 @@ dat <- rld %>%
 group <- sampleTable$condition
 design <- model.matrix(~ group)
 rldData <- dat %>%
-  removeBatchEffect(covariates = svseq$sv,
+  removeBatchEffect(covariates = svobj$sv,
                     design = design)
 
 ## ## batch correction limma - ath
@@ -188,7 +194,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = levels(cols))
-ggsave('../results/PCA_ath_sva.pdf', width = 15, height = 12)
-ggsave('../results/PCA_ath_sva.jpg', width = 15, height = 12)
+ggsave('PCA_ath_sva.pdf', width = 15, height = 12)
+ggsave('PCA_ath_sva.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

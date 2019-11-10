@@ -53,6 +53,8 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/')
+
 condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
 
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
@@ -69,7 +71,7 @@ degres %<>%
   apply(1, checkPersis, 1) %>%
   degres[., ]
 
-save(degres, file = '../results/degres_condi_Mock_lotus.RData')
+save(degres, file = 'degres_condi_Mock_lotus.RData')
 
 degres %<>% DESeq
 
@@ -116,8 +118,8 @@ svobj$sv %>%
   geom_point() +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90))
-ggsave('../results/auto_lotus_sv.jpg')
-ggsave('../results/auto_lotus_sv.pdf')
+ggsave('auto_lotus_sv.jpg')
+ggsave('auto_lotus_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +147,7 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsF
   select(ID, Gene : Description, C_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
   arrange(fullSC_vs_Mock_padj)
 
-write_csv(res, '../results/SynCom_vs_Mock_ath_k.csv')
+write_csv(res, 'SynCom_vs_Mock_ath_k.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -208,7 +210,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = cols[colorIdx])
-ggsave('../results/PCA_lotus_sva.pdf', width = 15, height = 12)
-ggsave('../results/PCA_lotus_sva.jpg', width = 15, height = 12)
+ggsave('PCA_lotus_sva.pdf', width = 15, height = 12)
+ggsave('PCA_lotus_sva.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

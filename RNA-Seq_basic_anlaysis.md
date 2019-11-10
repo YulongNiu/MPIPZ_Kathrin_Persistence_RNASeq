@@ -103,6 +103,7 @@ PCA plot of limma correction data (`1` and `2 3 4`)
 
 ![kmeans_10_trait_ath](results/kmeans_10_trait_ath.jpg)
 
+
 * Heatmap
 
 ![kmeans_10_heatmap_merge_ath](results/kmeans_10_heatmap_merge_ath.jpg)
