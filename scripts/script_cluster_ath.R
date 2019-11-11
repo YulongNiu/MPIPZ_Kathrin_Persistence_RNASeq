@@ -162,7 +162,7 @@ ggsave('kmeans_AIC_ath.pdf')
 ggsave('kmeans_AIC_ath.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 10, nstart = 1000, iter.max = 20)
+kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
