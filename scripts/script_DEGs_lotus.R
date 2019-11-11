@@ -35,11 +35,10 @@ anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno
 
 
 ##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data'
+wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/lotus_collaborator'
 setwd(wd)
 
-labelanno <- read_delim('../results/mapping.txt', delim = '\t') %>%
+labelanno <- read_delim('../../results/mapping.txt', delim = '\t') %>%
   dplyr::rename(ID = `library_number`, SampleAnno = `library_name`) %>%
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
   filter(species %>% str_detect('Lj'))
@@ -64,7 +63,7 @@ sampleTable$condition %<>% relevel(ref = 'Mock')
 
 degres <- DESeqDataSetFromTximport(kres, sampleTable, ~condition)
 
-## remove 0|0|0|x and |0|0|0|0
+## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
 degres %<>%
   estimateSizeFactors %>%
   counts(normalized = TRUE) %>%
@@ -91,12 +90,13 @@ tmp1 <- kres$counts %>%
 library('sva')
 library('ggplot2')
 
-## manual detect surrogate variance
 dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
 mod <- model.matrix(~ condition, colData(degres))
 mod0 <- model.matrix(~ 1, colData(degres))
+
+## manual detect surrogate variance
 svnum <- 4
 svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
@@ -158,7 +158,7 @@ pheatmap(assay(ntd),
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-library('directlabels')
+library('ggrepel')
 library('ggplot2')
 library('RColorBrewer')
 library('limma')
@@ -204,12 +204,12 @@ percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
 pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx])
-ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
+ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
-  scale_colour_manual(values = cols[colorIdx])
+  scale_colour_manual(values = cols[colorIdx]) +
+  geom_text_repel(force = 3)
 ggsave('PCA_lotus_sva.pdf', width = 15, height = 12)
 ggsave('PCA_lotus_sva.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
