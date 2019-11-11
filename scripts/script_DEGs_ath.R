@@ -18,7 +18,6 @@ checkPersis <- function(v, threshold) {
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
 library('tximport')
 library('rhdf5')
 library('magrittr')
@@ -94,7 +93,7 @@ svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 svobj <- sva(dat, mod, mod0)
 svnum <- svobj$sv %>% ncol
 
-svobj$sv %>%
+svseq$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
   as_tibble %>%
   gather(key = 'sv', value = 'value') %>%
@@ -113,10 +112,11 @@ ggsave('auto_ath_sv_3.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-degres$sv1 <- svobj$sv[, 1]
-degres$sv2 <- svobj$sv[, 2]
-degres$sv3 <- svobj$sv[, 3]
-design(degres) <- ~sv1 + sv2 + sv3 + condition
+degres$sv1 <- svseq$sv[, 1]
+degres$sv2 <- svseq$sv[, 2]
+degres$sv3 <- svseq$sv[, 3]
+degres$sv4 <- svseq$sv[, 4]
+design(degres) <- ~sv1 + sv2 + sv3 + sv4 + condition
 
 cond <- degres %>%
   resultsNames %>%
@@ -143,7 +143,6 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsF
   arrange(fullSC_vs_Mock_padj)
 
 write_csv(res, 'SynCom_vs_Mock_ath_sva_k.csv')
-save(degres, rldData, file = 'degres_condi_Mock_ath.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +154,7 @@ pheatmap(rldData,
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library('directlabels')
+library('ggrepel')
 library('ggplot2')
 library('RColorBrewer')
 library('limma')
@@ -168,7 +168,7 @@ dat <- rld %>%
 group <- sampleTable$condition
 design <- model.matrix(~ group)
 rldData <- dat %>%
-  removeBatchEffect(covariates = svobj$sv,
+  removeBatchEffect(covariates = svseq$sv,
                     design = design)
 
 ## ## batch correction limma - ath
@@ -188,13 +188,15 @@ percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
 pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[, 1], ID = rownames(colData(rld)))
-ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
+ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
-  scale_colour_manual(values = levels(cols))
-ggsave('PCA_ath_sva_3.pdf', width = 15, height = 12)
-ggsave('PCA_ath_sva_3.jpg', width = 15, height = 12)
+  scale_colour_manual(values = levels(cols)) +
+  geom_text_repel(force = 3)
+ggsave('PCA_ath_sva.pdf', width = 15, height = 12)
+ggsave('PCA_ath_sva.jpg', width = 15, height = 12)
+
+save(degres, rldData, file = 'degres_condi_Mock_ath.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

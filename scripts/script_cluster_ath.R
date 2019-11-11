@@ -218,10 +218,10 @@ ggsave(paste0(prefix, '_genes_ath.jpg'), width = 10, dpi = 320)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~cluster cor phenotype~~~~~~~~~~~~~~~~~
-traits <- data.frame(LjSC = c(0, 0, 1, 0),
+traits <- data.frame(fullSC = c(1, 0, 0, 0),
                      AtSC = c(0, 1, 0, 0),
-                     fullSC = c(1, 0, 0, 0),
-                     bacterial = c(1, 1, 1, 0),)
+                     LjSC = c(0, 0, 1, 0),
+                     bacterial = c(1, 1, 1, 0))
 
 cores <- clusterGene %>%
   group_by(cl) %>%
@@ -239,7 +239,7 @@ traitPPlot <- moduleTraitPvalue %>%
   gather(trait, pvalue, -1) %>%
   as_tibble
 
-tratiCorPlot <- moduleTraitCor %>%
+traitCorPlot <- moduleTraitCor %>%
   as.data.frame %>%
   rownames_to_column('cluster') %>%
   gather(trait, correlation, -1) %>%
