@@ -28,11 +28,9 @@ library('foreach')
 library('ParaMisc')
 library('GUniFrac')
 
-anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
+anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_v1p2_Anno.csv',
                  col_types = cols(Chromosome = col_character())) %>%
-  mutate(Gene = Gene %>% {if_else(is.na(.), '', .)}) %>%
-  mutate(Description = Description %>% {if_else(is.na(.), '', .)})
-
+  mutate_all(list(~replace(., is.na(.), '')))
 
 ##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
 wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/lotus_collaborator'
@@ -144,10 +142,10 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsF
   as_tibble %>%
   bind_cols(resRaw) %>%
   inner_join(anno, by = 'ID') %>%
-  select(ID, Gene : Description, C_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
+  select(ID, Gene : Description, L_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
   arrange(fullSC_vs_Mock_padj)
 
-write_csv(res, 'SynCom_vs_Mock_ath_k.csv')
+write_csv(res, 'SynCom_vs_Mock_lotus_k.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~heatmap~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,5 +210,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
   geom_text_repel(force = 3)
 ggsave('PCA_lotus_sva.pdf', width = 15, height = 12)
 ggsave('PCA_lotus_sva.jpg', width = 15, height = 12)
+
+save(degres, rldData, file = 'degres_condi_Mock_lotus.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################

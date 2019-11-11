@@ -16,6 +16,20 @@
 
 Raw fastq files path `/biodata/dep_psl/grp_rgo/ljsphere/atlj_cros_rnaseq`, analysis path `/netscratch/dep_psl/grp_rgo/yniu/KathrinPersistence`.
 
+```
+fullSC = At_strains + Lj_strains
+
+AtSC = At_strains
+
+LjSC = Lj_starins
+
+AtSCMloti = At_strains + LjNodule218
+
+AtMock = Only Col0 and no bacterial
+
+LjMock = Gifu with LjNodule218
+```
+
 ## 2. Progress
 
 ### 2.1 Alignment
@@ -126,9 +140,9 @@ PCA plot of raw data
 
 PCA plot of auto sva corrected data
 
-![auto_lotus_sv](results/auto_lotus_sv.jpg)
+![auto_lotus_sv](results/auto_lotus_sv_collaborator.jpg)
 
-![PCA_lotus_sva](results/PCA_lotus_sva.jpg)
+![PCA_lotus_sva](results/PCA_lotus_sva_collaborator.jpg)
 
 PCA plot of limma correction data (`1 2` and `3 4`)
 
@@ -138,3 +152,31 @@ PCA plot of limma correction data (`1 2` and `3 4`)
 
 ![PCA_lotus_noAtSCMloti_limma](results/PCA_lotus_limma_noAtSCMloti.jpg)
 
+
+* K-means cluster
+
+![kmeans_sse](results/kmeans_sse_lotus_collaborator.jpg)
+
+![kmeans_AIC](results/kmeans_AIC_lotus_collaborator.jpg)
+
+![kmeans_10_lotus_collaborator](results/kmeans_10_lotus_collaborator.jpg)
+  
+![kmeans_10_gene_lotus_collaborator](results/kmeans_10_genes_lotus_collaborator.jpg)
+
+* Trait
+
+```
+     fullSC AtSC AtSCMloti LjSC LjNodule218
+        1    0         0    0           1
+        0    1         0    0           0
+        0    0         1    0           1
+        0    0         0    1           1
+        0    0         0    0           1
+```
+
+![kmeans_10_trait_lotus_collaborator](results/kmeans_10_trait_lotus_collaborator.jpg)
+
+
+* Heatmap
+
+![kmeans_10_heatmap_merge_lotus_collaborator](results/kmeans_10_heatmap_merge_lotus_collaborator.jpg)

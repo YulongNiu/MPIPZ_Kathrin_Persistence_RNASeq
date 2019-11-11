@@ -23,7 +23,7 @@ noteAnno <- geneAnno %>%
   str_trim
 
 geneTable <- tibble(ID = str_extract(noteAnno, '(?<=ID=).*?(?=;)'),
-                    cDNA = str_extract(noteAnno, '(?<=Parent=).*?(?=;)'),
+                    Gene = str_extract(noteAnno, '(?<=Parent=).*?(?=;)'),
                     Chromosome = geneAnno$chromosome,
                     Start = geneAnno$start,
                     End = geneAnno$end,
@@ -32,7 +32,7 @@ geneTable <- tibble(ID = str_extract(noteAnno, '(?<=ID=).*?(?=;)'),
                     Ontology_ID = str_extract(noteAnno, '(?<=gene_ontology_id=).*?(?=;)') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode),
                     Best_TAIR = str_extract(noteAnno, '(?<=best_blast_hit_tair=).*?(?=;)') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode),
                     Best_sport = str_extract(noteAnno, '(?<=best_blast_hit_sprot=).*?(?=;)') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode),
-                    Best_trembl_plants = str_extract(noteAnno, '(?<=best_blast_hit_trembl_plants=).*?(?=;)') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode),
+                    Best_trembl_plants = str_extract(noteAnno, '(?<=best_blast_hit_trembl_plants=).*?$') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode),
                     Description = str_extract(noteAnno, '(?<=human_readable_description=).*?(?=;)') %>% {if_else(is.na(.), '', .)} %>% sapply(URLdecode)) %>%
   mutate_all(list(~str_replace(., 'N.A.', '')))
 
