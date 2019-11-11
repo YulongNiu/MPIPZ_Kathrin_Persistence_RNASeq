@@ -73,6 +73,12 @@ PCA plot of raw data
 
 PCA plot of auto sva corrected data
 
+![auto_ath_sv_3](results/auto_ath_sv_3.jpg)
+
+![PCA_ath_sva_3](results/PCA_ath_sva_3.jpg)
+
+PCA plot of sva 4 corrected data
+
 ![auto_ath_sv](results/auto_ath_sv.jpg)
 
 ![PCA_ath_sva](results/PCA_ath_sva.jpg)

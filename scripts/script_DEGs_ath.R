@@ -108,8 +108,8 @@ svobj$sv %>%
   geom_point() +
   geom_line() +
   theme(axis.text.x = element_text(angle = 90))
-ggsave('auto_ath_sv.jpg')
-ggsave('auto_ath_sv.pdf')
+ggsave('auto_ath_sv_3.jpg')
+ggsave('auto_ath_sv_3.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,7 +194,7 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group)) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
   geom_dl(aes(label = ID, color = Group), method = 'smart.grid') +
   scale_colour_manual(values = levels(cols))
-ggsave('PCA_ath_sva.pdf', width = 15, height = 12)
-ggsave('PCA_ath_sva.jpg', width = 15, height = 12)
+ggsave('PCA_ath_sva_3.pdf', width = 15, height = 12)
+ggsave('PCA_ath_sva_3.jpg', width = 15, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################
