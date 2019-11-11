@@ -126,7 +126,7 @@ PCA plot of limma correction data (`1` and `2 3 4`)
 
 * Heatmap
 
-![kmeans_10_heatmap_merge_ath](results/kmeans_10_heatmap_merge_ath.jpg)
+![kmeans_10_heatmap_ath](results/kmeans_10_heatmap_ath.jpg)
 
 ##### 2.2.2 Lotus japonicus
 
@@ -179,4 +179,4 @@ PCA plot of limma correction data (`1 2` and `3 4`)
 
 * Heatmap
 
-![kmeans_10_heatmap_merge_lotus_collaborator](results/kmeans_10_heatmap_merge_lotus_collaborator.jpg)
+![kmeans_10_heatmap_lotus_collaborator](results/kmeans_10_heatmap_lotus_collaborator.jpg)

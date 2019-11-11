@@ -514,12 +514,12 @@ g <- grid.arrange(groupne,
                   nrow = 1,
                   ncol = 10,
                   widths = c(3.5, 0.5, 0.5, 13, 0.5, 3, 0.5, 3, 0.5, 10) %>% {. / sum(.)})
-ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.pdf'), plot = g, width= 13)
-ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.jpg'), plot = g, width = 13)
+ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.pdf'), plot = g, width= 15)
+ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.jpg'), plot = g, width = 15)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## write the cluster file
 inner_join(deganno, heatPlot) %>%
   mutate_at(c('Gene', 'Description'), .funs = list(~if_else(is.na(.), '', .))) %>%
-  write_csv(paste0(prefix, '_ath.csv'))
+  write_csv(paste0(prefix, '_lotus_collaborator.csv'))
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
