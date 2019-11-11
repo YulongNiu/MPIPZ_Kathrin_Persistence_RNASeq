@@ -114,11 +114,11 @@ PCA plot of limma correction data (`1` and `2 3 4`)
 * Trait
 
 ```
-  bacterial AtSC LjSC
-         1    0    0
-         1    1    0
-         1    0    1
-         0    0    0
+  bacterial AtSC LjSC fullSC
+         1    0    0   1
+         1    1    0   1
+         1    0    1   1
+         0    0    0   0
 ```
 
 ![kmeans_10_trait_ath](results/kmeans_10_trait_ath.jpg)
