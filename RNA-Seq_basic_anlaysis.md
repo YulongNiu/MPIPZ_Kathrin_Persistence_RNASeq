@@ -5,9 +5,10 @@
 **Table of Contents**
 
 - [1. Introduction](#1-introduction)
-- [2. Progress](#3-progress)
-    - [2.1 Alignment](#21-alignment)
-    - [2.2 Cluster](#22-cluster)
+- [2. Alignment](#2-alignment)
+- [3. Cluster](#3-cluster)
+    - [3.1 Arabidopsis](#31-arabidopsis)
+    - [3.2 Lotus](#32-lotus)
 - [References](#references)
     
 <!-- content end -->
@@ -49,10 +50,7 @@ LjMock = Gifu with LjNodule218
 | Root1310   | LjRoot242   | 
 | Root480    | LjRoot60    | 
 
-
-## 2. Progress
-
-### 2.1 Alignment
+## 2 Alignment
 
 | sample        | rawfq_R1 | rawfq_R2 | trimfq  | H_plant     | K_plant     | 
 |---------------|----------|----------|---------|-------------|-------------| 
@@ -93,9 +91,9 @@ LjMock = Gifu with LjNodule218
 | L_mock_3      | 4873367  | 4873367  | 4769554 | 0.905/0.948 | 0.811/0.704 | 
 | L_mock_4      | 5203180  | 5203180  | 4838003 | 0.897/0.945 | 0.82/0.75   | 
 
-### 2.2 Cluster
+## 3 Cluster
 
-#### 2.2.1 Arabidopsis thaliana
+### 3.1 Arabidopsis
 
 *Arabidopsis thaliana* Col-0
 
@@ -148,7 +146,7 @@ PCA plot of limma correction data (`1` and `2 3 4`)
 
 ![kmeans_10_heatmap_ath](results/kmeans_10_heatmap_ath.jpg)
 
-##### 2.2.2 Lotus japonicus
+### 3.2 Lotus
 
 *Lotus japonicus* Gifu
 
@@ -172,7 +170,6 @@ PCA plot of limma correction data (`1 2` and `3 4`)
 
 ![PCA_lotus_noAtSCMloti_limma](results/PCA_lotus_limma_noAtSCMloti.jpg)
 
-
 * K-means cluster
 
 ![kmeans_sse](results/kmeans_sse_lotus_collaborator.jpg)
@@ -195,7 +192,6 @@ PCA plot of limma correction data (`1 2` and `3 4`)
 ```
 
 ![kmeans_10_trait_lotus_collaborator](results/kmeans_10_trait_lotus_collaborator.jpg)
-
 
 * Heatmap
 
