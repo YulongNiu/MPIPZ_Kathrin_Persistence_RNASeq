@@ -153,7 +153,6 @@ pheatmap(rldData,
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-library('directlabels')
 library('ggrepel')
 library('ggplot2')
 library('RColorBrewer')

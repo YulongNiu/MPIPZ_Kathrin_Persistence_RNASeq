@@ -30,6 +30,26 @@ AtMock = Only Col0 and no bacterial
 LjMock = Gifu with LjNodule218
 ```
 
+| At_strains | Lj_strains  | 
+|------------|-------------| 
+| Root83     | LjRoot1     | 
+| Root131    | LjRoot5     | 
+| Root123D2  | LjRoot52    | 
+| Root77     | LjRoot17    | 
+| Root1221   | LjRoot72    | 
+| Root935    | LjRoot82    | 
+| Root685    | LjRoot16    | 
+| Root101    | LjRoot24    | 
+| Root61     | LjRoot44    | 
+| Root265    | LjRoot80    | 
+| Root1485   | LjRoot33    | 
+| Root695    | LjNodule218 | 
+| Root68     | LjRoot59    | 
+| Root142    | LjRoot46    | 
+| Root1310   | LjRoot242   | 
+| Root480    | LjRoot60    | 
+
+
 ## 2. Progress
 
 ### 2.1 Alignment
