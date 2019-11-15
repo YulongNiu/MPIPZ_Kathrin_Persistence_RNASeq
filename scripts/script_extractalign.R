@@ -119,7 +119,7 @@ sampleAnno <- read_delim('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/re
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
   arrange(ID)
 
-athout <- 'nohup_align.out' %>%
+athout <- 'nohup_align_plantsyncom.out' %>%
   readLines %>%
   KHoutput(type = 'PE', org = 'ath') %>%
   mutate(H_ath = round(hmap/trimfq, 3), K_ath = round(kmap/trimfq, 3)) %>%
