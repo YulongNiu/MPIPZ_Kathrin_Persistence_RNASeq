@@ -8,3 +8,4 @@
 *.DS_Store
 results/fastp/
 align_data/
+align_data_plantsyncom/

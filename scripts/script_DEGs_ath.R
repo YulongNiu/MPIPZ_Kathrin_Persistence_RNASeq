@@ -33,10 +33,10 @@ anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno
 
 
 ##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
-wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data'
+wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/ath'
 setwd(wd)
 
-labelanno <- read_delim('../results/mapping.txt', delim = '\t') %>%
+labelanno <- read_delim('../../results/mapping.txt', delim = '\t') %>%
   dplyr::rename(ID = `library_number`, SampleAnno = `library_name`) %>%
   mutate(ID = ID %>% str_replace('\\.', '_')) %>%
   filter(species %>% str_detect('Ath'))
@@ -50,7 +50,7 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/')
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
 
 condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
 
@@ -178,23 +178,41 @@ rldData <- dat %>%
 ## }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- colData(rld)[, 1] %>% factor(., labels = brewer.pal(4, name = 'Set1'))
+cols <- brewer.pal(4, name = 'Dark2')
+
+## full
+sampleIdx <- 1:16
+colorIdx <- 1:4
+
+## without full
+sampleIdx <- 5:16
+colorIdx <- 1:3
 
 ## 1 - 2 C
-pca <- prcomp(t(rldData))
+pca <- prcomp(t(rldData[, sampleIdx]))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
-pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[, 1], ID = rownames(colData(rld)))
+pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx])
 ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  scale_colour_manual(values = levels(cols)) +
-  geom_text_repel(force = 3)
-ggsave('PCA_ath_sva.pdf', width = 15, height = 12)
-ggsave('PCA_ath_sva.jpg', width = 15, height = 12)
+  scale_colour_manual(name = 'SynCom',
+                      values = cols[colorIdx]) +
+  stat_ellipse(aes(x = PC1, y = PC2, group = Group), type = 't', linetype = 2, level = 0.8) +
+  coord_fixed(1) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5, size = 12, face = 'bold'),
+        legend.text.align = 0,
+        axis.text = element_text(size = 13),
+        axis.title = element_text(size = 14),
+        legend.text=element_text(size= 13),
+        legend.title = element_text(size = 14))
+
+ggsave('PCA_ath_sva.pdf', width = 10)
+ggsave('PCA_ath_sva.jpg', width = 10)
 
 save(degres, rldData, file = 'degres_condi_Mock_ath.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
