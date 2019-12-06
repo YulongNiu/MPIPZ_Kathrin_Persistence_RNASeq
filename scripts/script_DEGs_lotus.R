@@ -50,7 +50,7 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~normalization~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/')
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
 
 condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
 
@@ -67,8 +67,6 @@ degres %<>%
   counts(normalized = TRUE) %>%
   apply(1, checkPersis, 1) %>%
   degres[., ]
-
-save(degres, file = 'degres_condi_Mock_lotus.RData')
 
 degres %<>% DESeq
 
@@ -181,7 +179,7 @@ rldData <- dat %>%
 ## }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-cols <- c('#E41A1C', '#377EB8', '#4DAF4A', '#FF7F00', '#984EA3')
+cols <-  brewer.pal(5, name = 'Dark2')
 
 ## full
 sampleIdx <- 1:20
@@ -195,21 +193,37 @@ colorIdx <- 1:5
 ## sampleIdx <- (1:20)[-9:-12]
 ## colorIdx <- (1:5)[-4]
 
+## without fullSC
+sampleIdx <- (1:20)[-1:-4]
+colorIdx <- (1:5)[c(1, 2, 4, 3)]
+
 ## 1 - 2 C
 pca <- prcomp(t(rldData[, sampleIdx]))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
-pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx])
-ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
+pcaData <- tibble(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx]) %>%
+  mutate(SynCom = rep(c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4) %>% factor(levels = c('Mock+LjNodule218', 'AtSC', 'AtSC+LjNodule218', 'LjSC')))
+
+ggplot(pcaData, aes(x = PC1, y = PC2, colour = SynCom)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) +
-  scale_colour_manual(values = cols[colorIdx]) +
-  geom_text_repel(force = 3)
-ggsave('PCA_lotus_sva.pdf', width = 15, height = 12)
-ggsave('PCA_lotus_sva.jpg', width = 15, height = 12)
+  scale_colour_manual(name = 'SynCom',
+                      values = cols[colorIdx]) +
+  stat_ellipse(aes(x = PC1, y = PC2, group = SynCom), type = 't', linetype = 2, level = 0.8) +
+  coord_fixed(1) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5, size = 12, face = 'bold'),
+        legend.text.align = 0,
+        axis.text = element_text(size = 13),
+        axis.title = element_text(size = 14),
+        legend.text=element_text(size= 13),
+        legend.title = element_text(size = 14))
+
+ggsave('PCA_lotus_sva.pdf', width = 10)
+ggsave('PCA_lotus_sva.jpg', width = 10)
 
 save(degres, rldData, file = 'degres_condi_Mock_lotus.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
