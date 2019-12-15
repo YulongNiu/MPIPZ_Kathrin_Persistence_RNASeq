@@ -49,6 +49,8 @@ PCA plot of auto sva corrected data
 
 ![kmeans_10_lotus_collaborator](results_rmfull/kmeans_10_lotus.jpg)
 
+![kmeans_10_lotus_likeath](results_rmfull/kmeans_10_lotus_likeath.jpg)
+
 * Heatmap
 
 ![kmeans_10_lotus_heatmap](results_rmfull/kmeans_10_lotus_heatmap.jpg)
