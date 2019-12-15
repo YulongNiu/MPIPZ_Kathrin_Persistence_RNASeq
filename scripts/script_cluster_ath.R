@@ -16,7 +16,7 @@ library('gridExtra')
 library('cluster')
 
 load('degres_condi_Mock_ath.RData')
-deganno <- read_csv('SynCom_vs_Mock_ath_k.csv',
+deganno <- read_csv('SynCom_vs_Mock_ath_sva_k.csv',
                     col_types = cols(Chromosome = col_character()))
 
 ##~~~~~~~~~~~~~~~~~~~~~~useful funcs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,7 +82,7 @@ hc <- scaleCount %>%
   as.dist %>%
   hclust(method = 'complete')
 
-cairo_pdf('hierarch_ath.pdf')
+ cairo_pdf('hierarch_ath.pdf')
 heatmap.2(meanCount,
           Rowv = as.dendrogram(hr),
           Colv = as.dendrogram(hc),

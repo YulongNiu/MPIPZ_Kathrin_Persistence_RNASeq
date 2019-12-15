@@ -29,7 +29,9 @@ PCA plot of auto sva corrected data
 
 * Heatmap
 
-![kmeans_10_heatmap_ath](results/kmeans_10_heatmap_ath.jpg)
+![kmeans_10_ath_heatmap](results_rmfull/kmeans_10_ath_heatmap.jpg)
+
+![kmeans_10_ath_heatmap_2](results_rmfull/kmeans_10_ath_heatmap_2.jpg)
 
 ### 3.2 Lotus
 
@@ -37,29 +39,11 @@ PCA plot of auto sva corrected data
 
 * PCA plot
 
-PCA plot of raw data
-
-![PCA_lotus_raw](results/PCA_lotus_raw.jpg)
-
 PCA plot of auto sva corrected data
-
-![auto_lotus_sv](results/auto_lotus_sv_collaborator.jpg)
 
 ![PCA_lotus_sva](results/PCA_lotus_sva_collaborator.jpg)
 
-PCA plot of limma correction data (`1 2` and `3 4`)
-
-![PCA_lotus_limma](results/PCA_lotus_limma.jpg)
-
-![PCA_lotus_noAtSC_limma](results/PCA_lotus_limma_noAtSC.jpg)
-
-![PCA_lotus_noAtSCMloti_limma](results/PCA_lotus_limma_noAtSCMloti.jpg)
-
 * K-means cluster
-
-![kmeans_sse](results/kmeans_sse_lotus_collaborator.jpg)
-
-![kmeans_AIC](results/kmeans_AIC_lotus_collaborator.jpg)
 
 ![kmeans_10_lotus_collaborator](results/kmeans_10_lotus_collaborator.jpg)
   

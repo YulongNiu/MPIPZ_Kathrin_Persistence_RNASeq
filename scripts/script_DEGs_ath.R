@@ -118,6 +118,8 @@ degres$sv3 <- svseq$sv[, 3]
 degres$sv4 <- svseq$sv[, 4]
 design(degres) <- ~sv1 + sv2 + sv3 + sv4 + condition
 
+degres <- DESeq(degres)
+
 cond <- degres %>%
   resultsNames %>%
   str_extract('(?<=condition_).*') %>%
