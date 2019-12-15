@@ -119,6 +119,13 @@ ggsave('auto_lotus_sv.pdf')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+degres$sv1 <- svobj$sv[, 1]
+degres$sv2 <- svobj$sv[, 2]
+degres$sv3 <- svobj$sv[, 3]
+design(degres) <- ~sv1 + sv2 + sv3 + condition
+
+degres <- DESeq(degres)
+
 cond <- degres %>%
   resultsNames %>%
   str_extract('(?<=condition_).*') %>%
@@ -135,7 +142,7 @@ resRaw <- lapply(cond,
                  }) %>%
   bind_cols
 
-res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(ntd), stringsAsFactors = FALSE) %>%
+res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsFactors = FALSE) %>%
   rownames_to_column(., var = 'ID') %>%
   as_tibble %>%
   bind_cols(resRaw) %>%
@@ -189,13 +196,13 @@ colorIdx <- 1:5
 ## sampleIdx <- (1:20)[-5:-8]
 ## colorIdx <- (1:5)[-3]
 
-## ## without AtSCMloti
-## sampleIdx <- (1:20)[-9:-12]
-## colorIdx <- (1:5)[-4]
-
 ## without fullSC
 sampleIdx <- (1:20)[-1:-4]
 colorIdx <- (1:5)[c(1, 2, 4, 3)]
+
+## without fullSC and AtSCMloti
+sampleIdx <- (1:20)[c(-1:-4, -9:-12)]
+colorIdx <- (1:5)[c(1, 2, 3)]
 
 ## 1 - 2 C
 pca <- prcomp(t(rldData[, sampleIdx]))
@@ -204,7 +211,7 @@ percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
 pcaData <- tibble(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx]) %>%
-  mutate(SynCom = rep(c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4) %>% factor(levels = c('Mock+LjNodule218', 'AtSC', 'AtSC+LjNodule218', 'LjSC')))
+  mutate(SynCom = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4) %>% factor(levels = c('Mock+LjNodule218', 'AtSC', 'LjSC')))
 
 ggplot(pcaData, aes(x = PC1, y = PC2, colour = SynCom)) +
   geom_point(size = 3) +
@@ -222,8 +229,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = SynCom)) +
         legend.text=element_text(size= 13),
         legend.title = element_text(size = 14))
 
-ggsave('PCA_lotus_sva.pdf', width = 10)
-ggsave('PCA_lotus_sva.jpg', width = 10)
+ggsave('PCA_lotus_likeath_sva.pdf', width = 10)
+ggsave('PCA_lotus_likeath_sva.jpg', width = 10)
 
 save(degres, rldData, file = 'degres_condi_Mock_lotus.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

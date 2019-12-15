@@ -41,26 +41,13 @@ PCA plot of auto sva corrected data
 
 PCA plot of auto sva corrected data
 
-![PCA_lotus_sva](results/PCA_lotus_sva_collaborator.jpg)
+![PCA_lotus_sva](results_rmfull/PCA_lotus_sva.jpg)
+
+![PCA_lotus_likeath_sva](results_rmfull/PCA_lotus_likeath_sva.jpg)
 
 * K-means cluster
 
 ![kmeans_10_lotus_collaborator](results/kmeans_10_lotus_collaborator.jpg)
-  
-![kmeans_10_gene_lotus_collaborator](results/kmeans_10_genes_lotus_collaborator.jpg)
-
-* Trait
-
-```
-     fullSC AtSC AtSCMloti LjSC LjNodule218
-        1    0         0    0           1
-        0    1         0    0           0
-        0    0         1    0           1
-        0    0         0    1           1
-        0    0         0    0           1
-```
-
-![kmeans_10_trait_lotus_collaborator](results/kmeans_10_trait_lotus_collaborator.jpg)
 
 * Heatmap
 
