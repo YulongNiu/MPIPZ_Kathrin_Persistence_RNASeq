@@ -50,7 +50,7 @@ corPvalueStudent <- function(cor, nSamples) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~k-means cluster~~~~~~~~~~~~~~~~~~~~~~~~~
-rawCount <- rldData[, -1:-3]
+rawCount <- rldData[, -1:-4]
 
 ## mean value of normalized count
 ## sampleN <- c('fullSC', 'AtSC', 'LjSC', 'Mock')

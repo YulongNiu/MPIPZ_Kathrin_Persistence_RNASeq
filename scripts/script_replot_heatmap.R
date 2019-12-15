@@ -41,18 +41,18 @@ scaleC <- rawC %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 
-cairo_pdf('kmeans_10_ath_heatmap.jpg')
-syncom <- HeatmapAnnotation(SynCom = rep(c('Mock', 'AtSC', 'LjSC'), each = 4),
+cairo_pdf('kmeans_10_ath_heatmap.pdf')
+syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'LjSC', 'Mock'), each = 4),
                             col = list(SynCom = c('Mock' = '#1b9e77', 'AtSC' = '#d95f02', 'LjSC' = '#7570b3')),
                             gp = gpar(col = 'black'))
 
 Heatmap(matrix = scaleC %>% select(contains('C_')),
         name = 'Scaled Counts',
-        row_order = order(scaleC$cl) %>% rev,
+        ## row_order = order(scaleC$cl) %>% rev,
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
         column_order = 1 : 12,
-        column_split = rep(c('Mock', 'AtSC', 'LjSC'), each = 4)),
+        column_split = rep(c('AtSC', 'LjSC', 'Mock'), each = 4),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10),
         top_annotation = c(syncom))
