@@ -48,7 +48,7 @@ syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'LjSC', 'Mock'), each = 4),
 
 Heatmap(matrix = scaleC %>% select(contains('C_')),
         name = 'Scaled Counts',
-        ## row_order = order(scaleC$cl) %>% rev,
+        row_order = order(scaleC$cl) %>% rev,
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
         column_order = 1 : 12,
