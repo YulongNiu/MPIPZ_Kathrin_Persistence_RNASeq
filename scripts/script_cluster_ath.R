@@ -1,5 +1,5 @@
 ######################hierarchical clustering####################
-setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/')
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
 
 library('readr')
 library('magrittr')
@@ -25,7 +25,7 @@ meanFlg22 <- function(v) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 4, each = 4)) %>%
+    split(rep(1 : 3, each = 4)) %>%
     sapply(mean, na.rm = TRUE)
 
   return(res)
@@ -53,7 +53,8 @@ corPvalueStudent <- function(cor, nSamples) {
 rawCount <- rldData
 
 ## mean value of normalized count
-sampleN <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
+## sampleN <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
+sampleN <- c('AtSC', 'LjSC', 'Mock')
 meanCount <- rawCount %>%
   apply(1, meanFlg22) %>%
   t
