@@ -28,7 +28,7 @@ kmeansRes <- read_csv('kmeans_10_ath.csv') %>%
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
-  .[, c(13:16, 5:12)] %>%
+  .[, c(5:16)] %>%
   rownames_to_column('ID') %>%
   as_tibble %>%
   inner_join(kmeansRes %>% select(ID, cl))
@@ -52,7 +52,7 @@ Heatmap(matrix = scaleC %>% select(contains('C_')),
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
         column_order = 1 : 12,
-        column_split = rep(c('Mock', 'AtSC', 'LjSC'), each = 4),
+        column_split = rep(c('Mock', 'AtSC', 'LjSC'), each = 4)),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10),
         top_annotation = c(syncom))
