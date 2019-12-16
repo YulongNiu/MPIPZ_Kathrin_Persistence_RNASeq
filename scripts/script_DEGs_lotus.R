@@ -18,7 +18,6 @@ checkPersis <- function(v, threshold) {
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
 library('tximport')
 library('rhdf5')
 library('magrittr')

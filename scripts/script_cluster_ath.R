@@ -163,13 +163,13 @@ ggsave('kmeans_AIC_ath.pdf')
 ggsave('kmeans_AIC_ath.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
+kClust10 <- kmeans(scaleCount, centers = 6, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_10'
+prefix <- 'kmeans_6'
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%

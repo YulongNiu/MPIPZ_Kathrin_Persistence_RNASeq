@@ -61,12 +61,12 @@ sampleTable$condition %<>% relevel(ref = 'Mock')
 
 degres <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
 
-## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
-degres %<>%
-  estimateSizeFactors %>%
-  counts(normalized = TRUE) %>%
-  apply(1, checkPersis, 1) %>%
-  degres[., ]
+## ## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
+## degres %<>%
+##   estimateSizeFactors %>%
+##   counts(normalized = TRUE) %>%
+##   apply(1, checkPersis, 1) %>%
+##   degres[., ]
 
 degres %<>% DESeq
 
@@ -120,19 +120,21 @@ design(degres) <- ~sv1 + sv2 + sv3 + sv4 + condition
 
 degres <- DESeq(degres)
 
-cond <- degres %>%
-  resultsNames %>%
-  str_extract('(?<=condition_).*') %>%
-  .[!is.na(.)]
+cond <- list(c('fullSC', 'Mock'),
+             c('AtSC', 'Mock'),
+             c('LjSC', 'Mock'),
+             c('fullSC', 'AtSC'),
+             c('fullSC', 'LjSC'),
+             c('AtSC', 'LjSC'))
 
 resRaw <- lapply(cond,
                  function(x) {
                    degres %>%
-                     results(name = paste0('condition_', x)) %T>%
+                     results(contrast = c('condition', x)) %T>%
                      summary %>%
                      as_tibble %>%
                      select(pvalue, padj, log2FoldChange) %>%
-                     rename_all(.funs = list(~paste0(x, '_', .)))
+                     rename_all(.funs = list(~paste0(paste(x, collapse = '_vs_'), '_', .)))
                  }) %>%
   bind_cols
 
@@ -141,7 +143,7 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsF
   as_tibble %>%
   bind_cols(resRaw) %>%
   inner_join(anno, by = 'ID') %>%
-  select(ID, Gene : Description, C_fSC_1 : LjSC_vs_Mock_log2FoldChange) %>%
+  select(ID, Gene : Description, C_fSC_1 : AtSC_vs_LjSC_log2FoldChange) %>%
   arrange(fullSC_vs_Mock_padj)
 
 write_csv(res, 'SynCom_vs_Mock_ath_sva_k.csv')
