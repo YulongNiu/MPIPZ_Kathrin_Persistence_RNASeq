@@ -51,8 +51,12 @@ PCA plot of auto sva corrected data
 
 ![kmeans_10_lotus_collaborator](results_rmfull/kmeans_10_lotus.jpg)
 
-* Heatmap
+* Heatmap with whole transcriptome
 
 ![kmeans_10_lotus_heatmap](results_rmfull/kmeans_10_lotus_heatmap.jpg)
 
 ![kmeans_10_lotus_heatmap2](results_rmfull/kmeans_10_lotus_heatmap2.jpg)
+
+* Heatmap with DEGs
+
+![kmeans_10_lotus_heatmap_sig2](results_rmfull/kmeans_10_lotus_heatmap_sig2.jpg)
