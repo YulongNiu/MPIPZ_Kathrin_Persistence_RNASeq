@@ -22,13 +22,13 @@ meanFe <- function(v) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~heatmap all transcripts~~~~~~~~~~~~~~~~
-kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_likeath.csv') %>%
   select(ID, cl)
 
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
-  .[, c(-1:-8)] %>%
+  .[, c(-1:-4, -9:-12)] %>%
   rownames_to_column('ID') %>%
   as_tibble %>%
   inner_join(kmeansRes %>% select(ID, cl))
@@ -41,18 +41,18 @@ scaleC <- rawC %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 
-cairo_pdf('kmeans_10_lotus_rmfull_rmAtSC_heatmap.pdf', height = 8)
-syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
-                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'LjSC' = '#7570b3', 'AtSC+LjNodule218' = '#e7298a')),
+cairo_pdf('kmeans_10_lotus_likeath_heatmap2.pdf', height = 8)
+syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4),
+                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'LjSC' = '#7570b3', 'AtSC' = '#d95f02')),
                             gp = gpar(col = 'black'))
 
 Heatmap(matrix = scaleC %>% select(contains('L_')),
         name = 'Scaled Counts',
-        row_order = order(scaleC$cl) %>% rev,
+        ##row_order = order(scaleC$cl) %>% rev,
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
         column_order = 1 : 12,
-        column_split = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
+        column_split = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 7, name = 'RdYlBu')))(100),
         top_annotation = c(syncom))
@@ -61,10 +61,10 @@ dev.off()
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~box plot~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sampleN <- c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218')
+sampleN <- c('AtSC', 'LjSC', 'Mock+LjNodule218')
 
 boxplotData <- rldData %>%
-  .[, c(-1:-8)] %>%
+  .[, c(-1:-4, -9:-12)] %>%
   t %>%
   scale %>%
   t %>%
@@ -94,14 +94,14 @@ for (i in 1:10) {
           legend.text=element_text(size= 13),
           legend.title = element_text(size = 14))
 
-  ggsave(paste0('boxplot_lotus_rmfull_rmAtSC/kmeans_10_lotus_boxplot', i, '.pdf'))
-  ggsave(paste0('boxplot_lotus_rmfull_rmAtSC/kmeans_10_lotus_boxplot', i, '.jpeg'))
+  ggsave(paste0('boxplot_lotus_likeath/kmeans_10_lotus_boxplot', i, '.pdf'))
+  ggsave(paste0('boxplot_lotus_likeath/kmeans_10_lotus_boxplot', i, '.jpeg'))
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 wholeDEG <- read_csv('SynCom_vs_Mock_lotus_sva_k.csv')
-kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_likeath.csv') %>%
   select(ID, cl)
 
 fcsig <- wholeDEG %>%
@@ -109,7 +109,7 @@ fcsig <- wholeDEG %>%
   transmute_all(list(~ case_when(. > log2(1.5) ~ 1,
                                  . < -log2(1.5) ~ 1,
                                  TRUE ~ 0))) %>%
-  select(-matches('fullSC_|AtSC_'))
+  select(-matches('fullSC_|AtSCMloti_'))
 
 padjsig <- wholeDEG %>%
   select(ends_with('padj')) %>%
@@ -117,7 +117,7 @@ padjsig <- wholeDEG %>%
   `<`(0.05) %>%
   as_tibble %>%
   transmute_all(list(~ if_else(is.na(.), FALSE, .))) %>%
-  select(-matches('fullSC_|AtSC_'))
+  select(-matches('fullSC_|AtSCMloti_'))
 
 heatsig <- (padjsig * fcsig) %>%
   as_tibble %>%
@@ -129,7 +129,7 @@ heatsig <- (padjsig * fcsig) %>%
 
 rawC <- rldData %>%
   as.data.frame %>%
-  .[, c(9:20)] %>%
+  .[, c(-1:-4, -9:-12)] %>%
   rownames_to_column('ID') %>%
   as_tibble %>%
   inner_join(heatsig %>% select(ID, cl))
@@ -142,9 +142,9 @@ scaleC <- rawC %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 
-cairo_pdf('kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2.pdf')
-syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
-                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'LjSC' = '#7570b3', 'AtSC+LjNodule218' = '#e7298a')),
+cairo_pdf('kmeans_10_lotus_heatmap_likeath_sig2.pdf')
+syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4),
+                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'LjSC' = '#7570b3', 'AtSC' = '#d95f02')),
                             gp = gpar(col = 'black'))
 
 Heatmap(matrix = scaleC %>% select(contains('L_')),
@@ -153,7 +153,7 @@ Heatmap(matrix = scaleC %>% select(contains('L_')),
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
         column_order = 1 : 12,
-        column_split = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
+        column_split = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10),
         top_annotation = c(syncom))
