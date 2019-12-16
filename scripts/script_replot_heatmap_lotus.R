@@ -101,7 +101,7 @@ for (i in 1:10) {
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 wholeDEG <- read_csv('SynCom_vs_Mock_lotus_sva_k.csv')
-kmeansRes <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
   select(ID, cl)
 
 fcsig <- wholeDEG %>%
@@ -109,7 +109,7 @@ fcsig <- wholeDEG %>%
   transmute_all(list(~ case_when(. > log2(1.5) ~ 1,
                                  . < -log2(1.5) ~ 1,
                                  TRUE ~ 0))) %>%
-  select(-contains('fullSC'))
+  select(-matches('fullSC_|AtSC_'))
 
 padjsig <- wholeDEG %>%
   select(ends_with('padj')) %>%

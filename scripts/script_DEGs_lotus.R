@@ -60,12 +60,12 @@ sampleTable$condition %<>% relevel(ref = 'Mock')
 
 degres <- DESeqDataSetFromTximport(kres, sampleTable, ~condition)
 
-## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
-degres %<>%
-  estimateSizeFactors %>%
-  counts(normalized = TRUE) %>%
-  apply(1, checkPersis, 1) %>%
-  degres[., ]
+## ## remove 0|0|x|x, 0|0|0|x, 0|0|0|0
+## degres %<>%
+##   estimateSizeFactors %>%
+##   counts(normalized = TRUE) %>%
+##   apply(1, checkPersis, 1) %>%
+##   degres[., ]
 
 degres %<>% DESeq
 
@@ -133,7 +133,8 @@ cond <- list(c('fullSC', 'Mock'),
              c('fullSC', 'AtSCMloti'),
              c('fullSC', 'LjSC'),
              c('AtSC', 'AtSCMloti'),
-             c('AtSC', 'LjSC'))
+             c('AtSC', 'LjSC'),
+             c('AtSCMloti', 'LjSC'))
 
 resRaw <- lapply(cond,
                  function(x) {
@@ -151,7 +152,7 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsF
   as_tibble %>%
   bind_cols(resRaw) %>%
   inner_join(anno, by = 'ID') %>%
-  select(ID, Gene : Description, L_fSC_1 : AtSC_vs_LjSC_log2FoldChange) %>%
+  select(ID, Gene : Description, L_fSC_1 : AtSCMloti_vs_LjSC_log2FoldChange) %>%
   arrange(fullSC_vs_Mock_padj)
 
 write_csv(res, 'SynCom_vs_Mock_lotus_sva_k.csv')
