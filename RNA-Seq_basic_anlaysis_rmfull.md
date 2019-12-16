@@ -43,20 +43,12 @@ PCA plot of auto sva corrected data
 
 ![PCA_lotus_sva](results_rmfull/PCA_lotus_sva.jpg)
 
-![PCA_lotus_likeath_sva](results_rmfull/PCA_lotus_likeath_sva.jpg)
-
 * K-means cluster
 
 ![kmeans_10_lotus_collaborator](results_rmfull/kmeans_10_lotus.jpg)
-
-![kmeans_10_lotus_likeath](results_rmfull/kmeans_10_lotus_likeath.jpg)
 
 * Heatmap
 
 ![kmeans_10_lotus_heatmap](results_rmfull/kmeans_10_lotus_heatmap.jpg)
 
 ![kmeans_10_lotus_heatmap2](results_rmfull/kmeans_10_lotus_heatmap2.jpg)
-
-![kmeans_10_lotus_likeath_heatmap](results_rmfull/kmeans_10_lotus_likeath_heatmap.jpg)
-
-![kmeans_10_lotus_likeath_heatmap2](results_rmfull/kmeans_10_lotus_likeath_heatmap2.jpg)
