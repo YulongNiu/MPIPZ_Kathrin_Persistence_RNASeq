@@ -53,6 +53,8 @@ PCA plot of auto sva corrected data
 
 ![kmeans_10_lotus_likeath](results_rmfull/kmeans_10_lotus_likeath.jpg)
 
+![kmeans_10_lotus_likeath](results_rmfull/kmeans_10_lotus_rmfull_rmAtSC.jpg)
+
 * Heatmap with whole transcriptome
 
 ![kmeans_10_lotus_heatmap2](results_rmfull/kmeans_10_lotus_heatmap2.jpg)
