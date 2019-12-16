@@ -14,7 +14,7 @@ meanFe <- function(v) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 4, each = 4)) %>%
+    split(rep(1 : 3, each = 4)) %>%
     sapply(mean, na.rm = TRUE)
 
   return(res)
@@ -22,13 +22,13 @@ meanFe <- function(v) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~heatmap all transcripts~~~~~~~~~~~~~~~~
-kmeansRes <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
   select(ID, cl)
 
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
-  .[, c(-1:-4)] %>%
+  .[, c(-1:-8)] %>%
   rownames_to_column('ID') %>%
   as_tibble %>%
   inner_join(kmeansRes %>% select(ID, cl))
@@ -41,18 +41,18 @@ scaleC <- rawC %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 
-cairo_pdf('kmeans_10_lotus_heatmap2.pdf', height = 8)
-syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
-                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'AtSC' = '#d95f02', 'LjSC' = '#7570b3', 'AtSC+LjNodule218' = '#e7298a')),
+cairo_pdf('kmeans_10_lotus_rmfull_rmAtSC_heatmap.pdf', height = 8)
+syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
+                            col = list(SynCom = c('Mock+LjNodule218' = '#1b9e77', 'LjSC' = '#7570b3', 'AtSC+LjNodule218' = '#e7298a')),
                             gp = gpar(col = 'black'))
 
 Heatmap(matrix = scaleC %>% select(contains('L_')),
         name = 'Scaled Counts',
-        ## row_order = order(scaleC$cl) %>% rev,
+        row_order = order(scaleC$cl) %>% rev,
         row_split = scaleC$cl,
         row_gap = unit(2, "mm"),
-        column_order = 1 : 16,
-        column_split = rep(c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
+        column_order = 1 : 12,
+        column_split = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 7, name = 'RdYlBu')))(100),
         top_annotation = c(syncom))
@@ -61,10 +61,10 @@ dev.off()
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~box plot~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sampleN <- c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218')
+sampleN <- c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218')
 
 boxplotData <- rldData %>%
-  .[, c(-1:-4)] %>%
+  .[, c(-1:-8)] %>%
   t %>%
   scale %>%
   t %>%
@@ -94,8 +94,8 @@ for (i in 1:10) {
           legend.text=element_text(size= 13),
           legend.title = element_text(size = 14))
 
-  ggsave(paste0('boxplot/kmeans_10_lotus_boxplot', i, '.pdf'))
-  ggsave(paste0('boxplot/kmeans_10_lotus_boxplot', i, '.jpeg'))
+  ggsave(paste0('boxplot_lotus_rmfull_rmAtSC/kmeans_10_lotus_boxplot', i, '.pdf'))
+  ggsave(paste0('boxplot_lotus_rmfull_rmAtSC/kmeans_10_lotus_boxplot', i, '.jpeg'))
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

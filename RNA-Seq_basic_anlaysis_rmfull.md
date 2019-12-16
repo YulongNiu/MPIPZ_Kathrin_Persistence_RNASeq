@@ -55,13 +55,11 @@ PCA plot of auto sva corrected data
 
 * Heatmap with whole transcriptome
 
-![kmeans_10_lotus_heatmap](results_rmfull/kmeans_10_lotus_heatmap.jpg)
-
 ![kmeans_10_lotus_heatmap2](results_rmfull/kmeans_10_lotus_heatmap2.jpg)
 
-![kmeans_10_lotus_heatmap](results_rmfull/kmeans_10_lotus_likeath_heatmap.jpg)
-
 ![kmeans_10_lotus_heatmap2](results_rmfull/kmeans_10_lotus_likeath_heatmap2.jpg)
+
+![kmeans_10_lotus_rmfull_rmAtSC_heatmap2](results_rmfull/kmeans_10_lotus_rmfull_rmAtSC_heatmap2.jpg)
 
 * Heatmap with DEGs
 

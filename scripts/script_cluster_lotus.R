@@ -16,7 +16,7 @@ library('gridExtra')
 library('cluster')
 
 load('degres_condi_Mock_lotus.RData')
-deganno <- read_csv('SynCom_vs_Mock_lotus_k.csv',
+deganno <- read_csv('SynCom_vs_Mock_lotus_sva_k.csv',
                     col_types = cols(Chromosome = col_character()))
 
 ##~~~~~~~~~~~~~~~~~~~~~~useful funcs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,12 +50,13 @@ corPvalueStudent <- function(cor, nSamples) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~k-means cluster~~~~~~~~~~~~~~~~~~~~~~~~~
-rawCount <- rldData[, c(-1:-4, -9:-12)]
+rawCount <- rldData[, c(-1:-8)]
 
 ## mean value of normalized count
 ## sampleN <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
 ## sampleN <- c('AtSC', 'AtSCMloti', 'LjSC', 'Mock')
-sampleN <- c('AtSC', 'LjSC', 'Mock')
+## sampleN <- c('AtSC', 'LjSC', 'Mock')
+sampleN <- c('AtSCMloti', 'LjSC', 'Mock')
 meanCount <- rawCount %>%
   apply(1, meanFlg22) %>%
   t
@@ -136,8 +137,8 @@ ggplot(tibble(k = 1:20, wss = wss), aes(k, wss)) +
   geom_line(linetype = 'dashed') +
   xlab('Number of clusters') +
   ylab('Sum of squared error')
-ggsave('kmeans_sse_lotus_likeath.pdf')
-ggsave('kmeans_sse_lotus_likeath.jpg')
+ggsave('kmeans_sse_lotus_rmfull_rmAtSC.pdf')
+ggsave('kmeans_sse_lotus_rmfull_rmAtSC.jpg')
 
 
 ## 2. Akaike information criterion
@@ -160,8 +161,8 @@ ggplot(tibble(k = 1:20, aic = aic), aes(k, wss)) +
   geom_line(linetype = 'dashed') +
   xlab('Number of clusters') +
   ylab('Akaike information criterion')
-ggsave('kmeans_AIC_lotus_likeath.pdf')
-ggsave('kmeans_AIC_lotus_likeath.jpg')
+ggsave('kmeans_AIC_lotus_rmfull_rmAtSC.pdf')
+ggsave('kmeans_AIC_lotus_rmfull_rmAtSC.jpg')
 
 ## execute
 kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
@@ -197,8 +198,8 @@ ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   guides(colour = guide_legend(title = 'kmeans (k=10)'))
-ggsave(paste0(prefix, '_lotus_likeath.pdf'))
-ggsave(paste0(prefix, '_lotus_likeath.jpg'))
+ggsave(paste0(prefix, '_lotus_rmfull_rmAtSC.pdf'))
+ggsave(paste0(prefix, '_lotus_rmfull_rmAtSC.jpg'))
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
@@ -215,8 +216,8 @@ ggplot(clusterGenePlot, aes(Sample, NorExpress, group = ID)) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   guides(colour = guide_legend(title = 'kmeans (k=16)'))
-ggsave(paste0(prefix, '_genes_lotus_likeath.pdf'), width = 10, dpi = 320)
-ggsave(paste0(prefix, '_genes_lotus_likeath.jpg'), width = 10, dpi = 320)
+ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.pdf'), width = 10, dpi = 320)
+ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.jpg'), width = 10, dpi = 320)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~cluster cor phenotype~~~~~~~~~~~~~~~~~
@@ -523,5 +524,5 @@ ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.jpg'), plot = g,
 ## write the cluster file
 inner_join(deganno, heatPlot) %>%
   mutate_at(c('Gene', 'Description'), .funs = list(~if_else(is.na(.), '', .))) %>%
-  write_csv(paste0(prefix, '_lotus_likeath.csv'))
+  write_csv(paste0(prefix, '_lotus_rmfull_rmAtSC.csv'))
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
