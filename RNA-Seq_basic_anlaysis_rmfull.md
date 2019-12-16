@@ -47,7 +47,9 @@ PCA plot of auto sva corrected data
 
 ![PCA_lotus_sva](results_rmfull/PCA_lotus_sva.jpg)
 
-![PCA_lotus_sva](results_rmfull/PCA_lotus_likeath_sva.jpg)
+![PCA_lotus_likeath_sva](results_rmfull/PCA_lotus_likeath_sva.jpg)
+
+![PCA_lotus_rmfull_rmAtSC_sva](results_rmfull/PCA_lotus_rmfull_rmAtSC_sva.jpg)
 
 * K-means cluster
 

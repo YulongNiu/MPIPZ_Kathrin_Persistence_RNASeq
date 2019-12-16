@@ -209,6 +209,10 @@ colorIdx <- (1:5)[c(1, 2, 4, 3)]
 sampleIdx <- (1:20)[c(-1:-4, -9:-12)]
 colorIdx <- (1:5)[c(1, 2, 3)]
 
+## without fullSC and AtSC
+sampleIdx <- (1:20)[c(-1:-8)]
+colorIdx <- (1:5)[c(1, 4, 3)]
+
 ## 1 - 2 C
 pca <- prcomp(t(rldData[, sampleIdx]))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
@@ -216,7 +220,7 @@ percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
 pcaData <- tibble(PC1 = pca1, PC2 = pca2, Group = colData(rld)[sampleIdx, 1], ID = rownames(colData(rld))[sampleIdx]) %>%
-  mutate(SynCom = rep(c('AtSC', 'LjSC', 'Mock+LjNodule218'), each = 4) %>% factor(levels = c('Mock+LjNodule218', 'AtSC', 'LjSC')))
+  mutate(SynCom = rep(c('AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218'), each = 4) %>% factor(levels = c('Mock+LjNodule218', 'AtSC+LjNodule218', 'LjSC')))
 
 ggplot(pcaData, aes(x = PC1, y = PC2, colour = SynCom)) +
   geom_point(size = 3) +
@@ -234,8 +238,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = SynCom)) +
         legend.text=element_text(size= 13),
         legend.title = element_text(size = 14))
 
-ggsave('PCA_lotus_likeath_sva.pdf', width = 10)
-ggsave('PCA_lotus_likeath_sva.jpg', width = 10)
+ggsave('PCA_lotus_rmfull_rmAtSC_sva.pdf', width = 10)
+ggsave('PCA_lotus_rmfull_rmAtSC_sva.jpg', width = 10)
 
 save(degres, rldData, file = 'degres_condi_Mock_lotus.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
