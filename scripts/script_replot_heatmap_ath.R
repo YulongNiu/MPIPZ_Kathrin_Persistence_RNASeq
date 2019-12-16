@@ -41,7 +41,7 @@ scaleC <- rawC %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 
-cairo_pdf('kmeans_10_ath_heatmap2.pdf', height = 10)
+cairo_pdf('kmeans_10_ath_heatmap2.pdf', height = 8)
 syncom <- HeatmapAnnotation(SynCom = rep(c('AtSC', 'LjSC', 'Mock'), each = 4),
                             col = list(SynCom = c('Mock' = '#1b9e77', 'AtSC' = '#d95f02', 'LjSC' = '#7570b3')),
                             gp = gpar(col = 'black'))
