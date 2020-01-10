@@ -78,7 +78,7 @@ PCA plot of auto sva corrected data
 
 ## 2. Orthology mapping
 
-Row At-transcriptome
+Raw At-transcriptome
 
 ```
 ## number of transcripts for k-means cluster
@@ -90,7 +90,7 @@ Row At-transcriptome
 1981 3022 1865 2659 1830 2478 1882 3711 3431 2866 
 ```
 
-Row Lj-transcriptome (collaborator's annotation)
+Raw Lj-transcriptome (collaborator's annotation)
 
 ```
 ## number of transcripts for k-means cluster
@@ -104,7 +104,48 @@ Row Lj-transcriptome (collaborator's annotation)
 
 ### 2.1 Orthogroup
 
+A total of `12498` orthogroups were detected from Eik's analysis. Each orthogroup contains at least two transcripts, one is from At and the other is from Lj. 
 
+```
+# A tibble: 20,152 x 5
+   athID       athcl Orthogroup lotusID              lotuscl
+   <chr>       <dbl> <chr>      <chr>                  <dbl>
+ 1 AT2G25730.2     2 OG0001627  LotjaGi1g1v0391000.1      10
+ 2 AT3G62150.3     8 OG0000909  LotjaGi5g1v0238400.1       9
+ 3 AT3G62150.3     8 OG0000909  LotjaGi5g1v0238400.2       9
+ 4 AT3G48060.3     8 OG0001635  LotjaGi1g1v0183300.1       7
+ 5 AT1G06410.2     8 OG0003173  LotjaGi3g1v0253100.1       9
+ 6 AT4G31970.1     9 OG0006747  LotjaGi1g1v0349800.1       3
+ 7 AT3G25820.3     4 OG0000069  LotjaGi4g1v0043400.1       7
+ 8 AT5G49960.1     8 OG0006150  LotjaGi6g1v0363700.3       1
+ 9 AT2G25730.3    10 OG0001627  LotjaGi1g1v0391000.1      10
+10 AT5G13800.3     8 OG0001729  LotjaGi3g1v0117700.1      10
+# … with 20,142 more rows
+```
+
+Combine At-transcriptome with orthogroups
+
+```
+## number of transcripts for k-means cluster
+20152
+
+## number of transcripts in each cluster
+
+   1    2    3    4    5    6    7    8    9   10 
+1564 2452 1470 1943 1414 2032 1513 3011 2465 2288 
+```
+
+combine Lj-transcriptome (collaborator's annotation) with orthogroups
+
+```
+## number of transcripts for k-means cluster
+20152
+
+## number of transcripts in each cluster
+
+   1    2    3    4    5    6    7    8    9   10 
+2131 1698 1731 2251 1545 2241 2453 1837 2471 1794 
+```
 
 ### 2.2 TAIR Best hit
 
