@@ -28,9 +28,7 @@ library('ParaMisc')
 
 anno <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
                  col_types = cols(Chromosome = col_character())) %>%
-  mutate(Gene = Gene %>% {if_else(is.na(.), '', .)}) %>%
-  mutate(Description = Description %>% {if_else(is.na(.), '', .)})
-
+  mutate_all(list(~replace(., is.na(.), '')))
 
 ##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
 wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/ath'
@@ -54,8 +52,8 @@ setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
 
 condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
 
-sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
-rownames(sampleTable) <- colnames(kres$counts)
+sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi)) %>%
+  set_rownames(colnames(kres$counts))
 
 sampleTable$condition %<>% relevel(ref = 'Mock')
 
