@@ -165,6 +165,8 @@ orthoAnno <- readLines(orthoGFile) %>%
   }) %>%
   bind_rows
 
+save(orthoAnno, file = '../results_orthologs/orthoAnno.RData')
+
 ## all transcripts
 kmeansAth <- read_csv('kmeans_10_ath.csv') %>%
   select(ID, cl) %>%
