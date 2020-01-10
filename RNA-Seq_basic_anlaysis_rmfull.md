@@ -123,7 +123,7 @@ A total of `12498` orthogroups were detected from Eik's analysis. Each orthogrou
 # … with 20,142 more rows
 ```
 
-Combine At-transcriptome with orthogroups
+Combine At-transcriptome with orthogroups:
 
 ```
 ## number of transcripts for k-means cluster
@@ -135,7 +135,7 @@ Combine At-transcriptome with orthogroups
 1564 2452 1470 1943 1414 2032 1513 3011 2465 2288 
 ```
 
-combine Lj-transcriptome (collaborator's annotation) with orthogroups
+combine Lj-transcriptome (collaborator's annotation) with orthogroups:
 
 ```
 ## number of transcripts for k-means cluster
@@ -147,7 +147,7 @@ combine Lj-transcriptome (collaborator's annotation) with orthogroups
 2131 1698 1731 2251 1545 2241 2453 1837 2471 1794 
 ```
 
-Intersection of At and Lj clusters
+Intersection of At and Lj clusters:
 
 ```
      Lj1 Lj2 Lj3 Lj4 Lj5 Lj6 Lj7 Lj8 Lj9 Lj10
@@ -165,4 +165,75 @@ At10 235 191 168 257 217 282 268 210 268  192
 
 ### 2.2 TAIR Best hit
 
+Use the `Best_TAIR` annotation, which *may be* the best BLASTp hit of Lj proteins to the TAIR database (At homology of Lj).
 
+```
+# A tibble: 24,840 x 1
+   Best_TAIR                                                                    
+   <chr>                                                                        
+ 1 AT3G56400.1 WRKY DNA-binding protein 70                                      
+ 2 AT4G10500.1 2-oxoglutarate (2OG) and Fe(II)-dependent oxygenase superfamily …
+ 3 AT1G03220.1 Eukaryotic aspartyl protease family protein                      
+ 4 AT4G36090.2 oxidoreductase, 2OG-Fe(II) oxygenase family protein              
+ 5 AT4G08290.1 nodulin MtN21 /EamA-like transporter family protein              
+ 6 AT3G56400.1 WRKY DNA-binding protein 70          
+```
+
+The merged cluster and annotation table is:
+
+```
+# A tibble: 20,455 x 4
+   athID       athcl lotusID              lotuscl
+   <chr>       <dbl> <chr>                  <dbl>
+ 1 AT2G25730.2     2 LotjaGi1g1v0391000.1      10
+ 2 AT4G31970.1     9 LotjaGi3g1v0092600.1       7
+ 3 AT5G49960.1     8 LotjaGi1g1v0800800.1       1
+ 4 AT5G49960.1     8 LotjaGi1g1v0800800.5       7
+ 5 AT5G49960.1     8 LotjaGi6g1v0363700.1       3
+ 6 AT5G49960.1     8 LotjaGi6g1v0363700.3       1
+ 7 AT5G13800.3     8 LotjaGi3g1v0117700.1      10
+ 8 AT5G13800.3     8 LotjaGi3g1v0117700.2      10
+ 9 AT4G02570.1     2 LotjaGi6g1v0248100.1       3
+10 AT4G02570.1     2 LotjaGi6g1v0248100.5       3
+# … with 20,445 more rows
+```
+
+Combine At-transcriptome with best TAIR hit:
+
+```
+## number of transcripts for k-means cluster
+20455
+
+## number of transcripts in each cluster
+
+   1    2    3    4    5    6    7    8    9   10 
+1546 2568 1519 1972 1317 2258 1603 3267 2364 2041 
+```
+
+combine Lj-transcriptome (collaborator's annotation) with best TAIR hit:
+
+```
+## number of transcripts for k-means cluster
+20455
+
+## number of transcripts in each cluster
+
+   1    2    3    4    5    6    7    8    9   10 
+2079 1830 1841 2229 1672 2280 2338 1851 2456 1879 
+```
+
+Intersection of At and Lj clusters:
+
+```
+     Lj1 Lj2 Lj3 Lj4 Lj5 Lj6 Lj7 Lj8 Lj9 Lj10
+At1  154 117 144 210 121 179 151 144 180  146
+At2  253 232 244 269 206 248 315 211 316  274
+At3  168 128 154 156 118 149 184 108 202  152
+At4  192 203 165 232 149 220 248 168 217  178
+At5  128 133 126 129 102 144 158 112 158  127
+At6  242 206 220 253 179 249 251 218 261  179
+At7  170 127 138 177 133 205 173 155 190  135
+At8  340 298 283 326 297 354 383 275 412  299
+At9  223 213 210 262 176 276 251 266 280  207
+At10 209 173 157 215 191 256 224 194 240  182
+```

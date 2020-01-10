@@ -113,6 +113,14 @@ lotus2ath <- foreach(i = 1:10) %do% {
 }
 
 names(lotus2ath) <- 1:10
+
+interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
+for (i in seq_len(10)) {
+  interMat[i, ] <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+}
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~orthogroups~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,6 +154,7 @@ orthoAnno <- readLines(orthoGFile) %>%
   }) %>%
   bind_rows
 
+## all transcripts
 kmeansAth <- read_csv('kmeans_10_ath.csv') %>%
   select(ID, cl) %>%
   dplyr::rename(athID = ID, athcl = cl) %>%
@@ -183,4 +192,17 @@ for (i in seq_len(10)) {
     .$lotuscl %>%
     table
 }
+
+## only DEGs
+kmeansAthDEG <- read_csv('../results_orthologs/heatsigAth.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(athID = ID, athcl = cl) %>%
+  inner_join(orthoAnno, by = c('athID' = 'ID'))
+
+kmeansLotusDEG <- read_csv('../results_orthologs/heatsigLotus.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(lotusID = ID, lotuscl = cl) %>%
+  inner_join(orthoAnno, by = c('lotusID' = 'ID'))
+
+mergeKmeansDEG <- inner_join(kmeansAthDEG, kmeansLotusDEG)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
