@@ -121,6 +121,17 @@ for (i in seq_len(10)) {
     .$lotuscl %>%
     table
 }
+
+## only DEGs
+mergeKmeansDEG <- read_csv('../results_orthologs/heatsigAth.csv') %>%
+  select(ID) %>%
+  dplyr::rename(athID = ID) %>%
+  inner_join(mergeKmeans)
+
+kmeansLotusDEG <- read_csv('../results_orthologs/heatsigLotus.csv') %>%
+  select(ID) %>%
+  dplyr::rename(lotusID = ID) %>%
+  inner_join(mergeKmeansDEG)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~orthogroups~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
