@@ -165,7 +165,6 @@ ath2lotus <- foreach(i = 1:10) %do% {
     table %>%
     sort(decreasing = TRUE)
 }
-
 names(ath2lotus) <- 1:10
 
 lotus2ath <- foreach(i = 1:10) %do% {
@@ -175,6 +174,13 @@ lotus2ath <- foreach(i = 1:10) %do% {
     table %>%
     sort(decreasing = TRUE)
 }
-
 names(lotus2ath) <- 1:10
+
+interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
+for (i in seq_len(10)) {
+  interMat[i, ] <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+}
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
