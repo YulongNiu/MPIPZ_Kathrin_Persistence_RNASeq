@@ -11,6 +11,27 @@ setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs')
 
 load('kresOrtho.RData')
 
+load('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/orthoAnno.RData')
+
+annoAth <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
+                    col_types = cols(Chromosome = col_character())) %>%
+  mutate_all(list(~replace(., is.na(.), ''))) %>%
+  inner_join(orthoAnno) %>%
+  setNames(paste0(names(.), '_At'))
+
+annoLotus <- read_csv('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_v1p2_Anno.csv',
+                      col_types = cols(Chromosome = col_character())) %>%
+  mutate_all(list(~replace(., is.na(.), ''))) %>%
+  inner_join(orthoAnno) %>%
+  setNames(paste0(names(.), '_Lj'))
+
+## check collaborator annotation and Othofinder
+annoMerge <- inner_join(annoAth, annoLotus, by = c('Orthogroup_At' = 'Orthogroup_Lj')) %>%
+  dplyr::rename(Orthogroup = Orthogroup_At) %>%
+  select(Orthogroup, everything()) %>%
+  group_by(Orthogroup) %>%
+  summarise_all(.funs = list(~paste(., collapse = '|')))
+
 ## check
 (rownames(kresAthOrtho) == rownames(kresLotusOrtho)) %>%
   sum(.) == nrow(kresAthOrtho)
@@ -60,8 +81,47 @@ svobj$sv %>%
   theme(axis.text.x = element_text(angle = 90))
 ggsave('auto_og_sv_6.jpg')
 ggsave('auto_og_sv_6.pdf')
-#################################################################
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+degres$sv1 <- svobj$sv[, 1]
+degres$sv2 <- svobj$sv[, 2]
+degres$sv3 <- svobj$sv[, 3]
+degres$sv4 <- svobj$sv[, 4]
+degres$sv5 <- svobj$sv[, 5]
+degres$sv6 <- svobj$sv[, 6]
+design(degres) <- ~sv1 + sv2 + sv3 + sv4 + sv5 + sv6 + condition
+
+degres <- DESeq(degres)
+
+cond <- list(c('AtSC_At', 'Mock_At'),
+             c('LjSC_At', 'Mock_At'),
+             c('AtSC_At', 'LjSC_At'),
+             c('AtSCMloti_Lj', 'Mock_Lj'),
+             c('LjSC_Lj', 'Mock_Lj'),
+             c('AtSCMloti_Lj', 'LjSC_Lj'))
+
+resRaw <- lapply(cond,
+                 function(x) {
+                   degres %>%
+                     results(contrast = c('condition', x)) %T>%
+                     summary %>%
+                     as_tibble %>%
+                     select(pvalue, padj, log2FoldChange) %>%
+                     rename_all(.funs = list(~paste0(paste(x, collapse = '_vs_'), '_', .)))
+                 }) %>%
+  bind_cols
+
+res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsFactors = FALSE) %>%
+  rownames_to_column(., var = 'ID') %>%
+  as_tibble %>%
+  bind_cols(resRaw) %>%
+  inner_join(annoMerge, by = c('ID' = 'Orthogroup')) %>%
+  select(ID, Gene_At : Description_Lj, C_fSC_1 : AtSCMloti_Lj_vs_LjSC_Lj_log2FoldChange) %>%
+  arrange(AtSC_At_vs_Mock_At_padj)
+
+write_csv(res, 'SynCom_vs_Mock_og_rmfull_sva_k.csv')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 library('ggrepel')
@@ -117,6 +177,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
 
 ggsave('PCA_og_rmfull_sva.pdf', width = 10)
 ggsave('PCA_og_rmfull_sva.jpg', width = 10)
+
+save(degres, rldData, file = 'degres_condi_og_rmfull.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ######################################################################
 
