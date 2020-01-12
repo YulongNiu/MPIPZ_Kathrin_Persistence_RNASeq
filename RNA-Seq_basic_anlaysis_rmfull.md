@@ -280,3 +280,6 @@ remove full SynCom PCA plot
 
 ![PCA_og_rmfull_sva](results_orthologs/PCA_og_rmfull_sva.jpg)
 
+### 2.4 k-means cluster
+
+![kmeans_10_og_rmfull](results_orthologs/kmeans_10_og_rmfull.jpg)
