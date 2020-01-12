@@ -26,7 +26,7 @@ library('tidyverse')
 library('foreach')
 library('ParaMisc')
 
-load('../results_orthologs/orthoAnno.RData')
+load('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/orthoAnno.RData')
 
 annoAth <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
                     col_types = cols(Chromosome = col_character())) %>%
@@ -71,13 +71,19 @@ sampleTable$condition %<>% relevel(ref = 'Mock')
 kresAth <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
 kresAthCounts <- assay(kresAth)
 
-split(annoAth$ID_At, annoAth$Orthogroup_At) %>%
+kresAthOrthoCounts <- split(annoAth$ID_At, annoAth$Orthogroup_At) %>%
   lapply(function(x) {
-    match(x, rownames(kresAthCounts))
-  })
+    eachCount <- match(x, rownames(kresAthCounts)) %>%
+      kresAthCounts[., , drop = FALSE] %>%
+      colSums
+
+    return(eachCount)
+  }) %>% do.call(rbind, .)
+
+kresAthOrtho  <- DESeqDataSetFromMatrix(kresAthOrthoCounts, sampleTable, ~ condition)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##~~~~~~~~~~~~~~~~~~~~load k alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
+##~~~~~~~~~~~~~~~~~~~~load lotus alignments~~~~~~~~~~~~~~~~~~~~~~~~~~
 wd <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/lotus_collaborator'
 setwd(wd)
 
@@ -92,7 +98,30 @@ slabel <- labelanno$SampleAnno %>%
 kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
   tximport(type = 'kallisto', txOut = TRUE)
+
+condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
+
+sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
+rownames(sampleTable) <- colnames(kres$counts)
+
+sampleTable$condition %<>% relevel(ref = 'Mock')
+
+kresLotus <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
+kresLotusCounts <- assay(kresLotus)
+
+kresLotusOrthoCounts <- split(annoLotus$ID_Lj, annoLotus$Orthogroup_Lj) %>%
+  lapply(function(x) {
+    eachCount <- match(x, rownames(kresLotusCounts)) %>%
+      kresLotusCounts[., , drop = FALSE] %>%
+      colSums
+
+    return(eachCount)
+  }) %>% do.call(rbind, .)
+
+kresLotusOrtho <- DESeqDataSetFromMatrix(kresLotusOrthoCounts, sampleTable, ~ condition)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+save(kresAthOrtho, kresLotusOrtho, file = '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/kresOrtho.RData')
 
 
 #################################################################
