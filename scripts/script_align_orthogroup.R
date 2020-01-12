@@ -61,12 +61,10 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
   tximport(type = 'kallisto', txOut = TRUE)
 
-condi <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
+condi <- c('fullSC_At', 'AtSC_At', 'LjSC_At', 'Mock_At')
 
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi)) %>%
   set_rownames(colnames(kres$counts))
-
-sampleTable$condition %<>% relevel(ref = 'Mock')
 
 kresAth <- DESeqDataSetFromTximport(kres, sampleTable, ~ condition)
 kresAthCounts <- assay(kresAth)
@@ -99,7 +97,7 @@ kres <- file.path(wd, slabel, 'abundance.h5') %>%
   set_names(labelanno$SampleAnno) %>%
   tximport(type = 'kallisto', txOut = TRUE)
 
-condi <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
+condi <- c('fullSC_Lj', 'AtSC_Lj', 'AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 
 sampleTable <- data.frame(condition = factor(rep(condi, each = 4), levels = condi))
 rownames(sampleTable) <- colnames(kres$counts)
@@ -122,6 +120,4 @@ kresLotusOrtho <- DESeqDataSetFromMatrix(kresLotusOrthoCounts, sampleTable, ~ co
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 save(kresAthOrtho, kresLotusOrtho, file = '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/kresOrtho.RData')
-
-
 #################################################################
