@@ -10,6 +10,7 @@
 - [2. Orthology mapping](#2-orthology-mapping)
     - [2.1 Orthogroup](#21-orthogroup)
     - [2.2 TAIR Best hit](#22-tair-best-hit)
+    - [2.3 PCA plot](#23-pca-plot)
 - [References](#references)
     
 <!-- content end -->
@@ -268,3 +269,14 @@ At8  0.0153 0.0136 0.0129 0.0146 0.0136 0.0158 0.0171 0.0125 0.0183 0.0136
 At9  0.0100 0.0097 0.0095 0.0117 0.0080 0.0123 0.0111 0.0121 0.0124 0.0094
 At10 0.0094 0.0078 0.0071 0.0096 0.0087 0.0114 0.0099 0.0088 0.0106 0.0082
 ```
+
+### 2.3 PCA plot
+
+Full sample PCA plot
+
+![PCA_og_sva](results_orthologs/PCA_og_sva.jpg)
+
+remove full SynCom PCA plot
+
+![PCA_og_rmfull_sva](results_orthologs/PCA_og_rmfull_sva.jpg)
+
