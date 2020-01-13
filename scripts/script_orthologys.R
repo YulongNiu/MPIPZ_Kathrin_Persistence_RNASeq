@@ -243,6 +243,7 @@ kmeansLotus <- read_csv('../results_orthologs/kmeans_10_lotus_og_rmfull.csv') %>
 
 mergeKmeans <- inner_join(kmeansAth, kmeansLotus)
 
+## jaccard similarity
 interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
 for (i in seq_len(10)) {
 
@@ -256,5 +257,21 @@ for (i in seq_len(10)) {
   interMat[i, ] <- interNum / unionNum
 }
 
-interMat %>% round(digits = 5)
+interMat %>% round(digits = 4)
+
+interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
+for (i in seq_len(10)) {
+
+  interNum <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+
+  interMat[i, ] <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    nrow %>%
+    {interNum / .}
+}
+
+interMat %>% round(digits = 4)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
