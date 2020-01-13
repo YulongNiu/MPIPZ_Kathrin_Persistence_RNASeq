@@ -233,3 +233,13 @@ kmeansLotusDEG <- read_csv('../results_orthologs/heatsigLotus.csv') %>%
 
 mergeKmeansDEG <- inner_join(kmeansAthDEG, kmeansLotusDEG)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~orthogroup compare~~~~~~~~~~~~~~~~
+kmeansAth <- read_csv('../results_orthologs/kmeans_10_ath_og_rmfull.csv') %>%
+  rename(clAt = cl)
+
+kmeansLotus <- read_csv('../results_orthologs/kmeans_10_lotus_og_rmfull.csv') %>%
+  rename(clLj = cl)
+
+kmeansMerge <- inner_join(kmeansAth, kmeansLotus)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
