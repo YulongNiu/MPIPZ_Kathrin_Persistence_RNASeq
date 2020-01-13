@@ -236,10 +236,25 @@ mergeKmeansDEG <- inner_join(kmeansAthDEG, kmeansLotusDEG)
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~orthogroup compare~~~~~~~~~~~~~~~~
 kmeansAth <- read_csv('../results_orthologs/kmeans_10_ath_og_rmfull.csv') %>%
-  rename(clAt = cl)
+  rename(athcl = cl)
 
 kmeansLotus <- read_csv('../results_orthologs/kmeans_10_lotus_og_rmfull.csv') %>%
-  rename(clLj = cl)
+  rename(lotuscl = cl)
 
-kmeansMerge <- inner_join(kmeansAth, kmeansLotus)
+mergeKmeans <- inner_join(kmeansAth, kmeansLotus)
+
+interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
+for (i in seq_len(10)) {
+
+  interNum <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+
+  unionNum <- ((mergeKmeans$athcl %in% i) %>% length) + (mergeKmeans$lotuscl %>% table) - interNum
+
+  interMat[i, ] <- interNum / unionNum
+}
+
+interMat %>% round(digits = 5)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
