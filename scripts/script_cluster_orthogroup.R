@@ -24,7 +24,7 @@ meanFlg22 <- function(v) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 3, each = 4)) %>%
+    split(rep(1 : 6, each = 4)) %>%
     sapply(mean, na.rm = TRUE)
 
   return(res)
@@ -58,7 +58,7 @@ sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
 rmfull_lotus <- c(25:36)
 sampleN <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 
-rawCount <- rldData[, rmfull_lotus]
+rawCount <- rldData[, rmfull_all]
 
 ## mean value of normalized count
 meanCount <- rawCount %>%
@@ -141,8 +141,8 @@ ggplot(tibble(k = 1:20, wss = wss), aes(k, wss)) +
   geom_line(linetype = 'dashed') +
   xlab('Number of clusters') +
   ylab('Sum of squared error')
-ggsave('kmeans_sse_lotus_og_rmfull.pdf')
-ggsave('kmeans_sse_lotus_og_rmfull.jpg')
+ggsave('kmeans_sse_og_rmfull.pdf')
+ggsave('kmeans_sse_og_rmfull.jpg')
 
 
 ## 2. Akaike information criterion
@@ -165,17 +165,17 @@ ggplot(tibble(k = 1:20, aic = aic), aes(k, wss)) +
   geom_line(linetype = 'dashed') +
   xlab('Number of clusters') +
   ylab('Akaike information criterion')
-ggsave('kmeans_AIC_lotus_og_rmfull.pdf')
-ggsave('kmeans_AIC_lotus_og_rmfull.jpg')
+ggsave('kmeans_AIC_og_rmfull.pdf')
+ggsave('kmeans_AIC_og_rmfull.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
+kClust10 <- kmeans(scaleCount, centers = 20, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_10'
+prefix <- 'kmeans_20'
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -201,9 +201,9 @@ ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=10)'))
-ggsave(paste0(prefix, 'lotus_og_rmfull.pdf'))
-ggsave(paste0(prefix, 'lotus_og_rmfull.jpg'))
+  guides(colour = guide_legend(title = 'kmeans (k=20)'))
+ggsave(paste0(prefix, '_og_rmfull.pdf'), height = 10)
+ggsave(paste0(prefix, '_og_rmfull.jpg'), height = 10)
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
