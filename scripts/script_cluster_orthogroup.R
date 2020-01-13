@@ -24,7 +24,7 @@ meanFlg22 <- function(v) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 6, each = 4)) %>%
+    split(rep(1 : 3, each = 4)) %>%
     sapply(mean, na.rm = TRUE)
 
   return(res)
@@ -58,7 +58,7 @@ sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
 rmfull_lotus <- c(25:36)
 sampleN <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 
-rawCount <- rldData[, rmfull_all]
+rawCount <- rldData[, rmfull_ath]
 
 ## mean value of normalized count
 meanCount <- rawCount %>%
@@ -169,13 +169,13 @@ ggsave('kmeans_AIC_og_rmfull.pdf')
 ggsave('kmeans_AIC_og_rmfull.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 20, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
+kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_20'
+prefix <- 'kmeans_10'
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -201,9 +201,9 @@ ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=20)'))
-ggsave(paste0(prefix, '_og_rmfull.pdf'), height = 10)
-ggsave(paste0(prefix, '_og_rmfull.jpg'), height = 10)
+  guides(colour = guide_legend(title = 'kmeans (k=10)'))
+ggsave(paste0(prefix, '_ath_og_rmfull.pdf'), height = 10)
+ggsave(paste0(prefix, '_ath_og_rmfull.jpg'), height = 10)
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
@@ -223,4 +223,6 @@ ggplot(clusterGenePlot, aes(Sample, NorExpress, group = ID)) +
 ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.pdf'), width = 10, dpi = 320)
 ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.jpg'), width = 10, dpi = 320)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+write_csv(clusterGene, '_ath_og_rmfull.csv')
 
