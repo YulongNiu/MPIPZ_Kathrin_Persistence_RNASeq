@@ -11,6 +11,7 @@
     - [2.1 Orthogroup](#21-orthogroup)
     - [2.2 TAIR Best hit](#22-tair-best-hit)
     - [2.3 PCA plot](#23-pca-plot)
+    - [2.4 k-means cluster](#24-k-means-cluster)
 - [References](#references)
     
 <!-- content end -->
@@ -285,5 +286,6 @@ remove full SynCom PCA plot
 ![kmeans_10_og_rmfull](results_orthologs/kmeans_10_og_rmfull.jpg)
 
 ![kmeans_ath_10_og_rmfull](results_orthologs/kmeans_10_ath_og_rmfull.jpg)
+
 ![kmeans_lotus_10_og_rmfull](results_orthologs/kmeans_10_lotus_og_rmfull.jpg)
 
