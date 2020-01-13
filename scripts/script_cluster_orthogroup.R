@@ -24,7 +24,7 @@ meanFlg22 <- function(v) {
   require('magrittr')
 
   res <- v %>%
-    split(rep(1 : 6, each = 4)) %>%
+    split(rep(1 : 3, each = 4)) %>%
     sapply(mean, na.rm = TRUE)
 
   return(res)
@@ -49,10 +49,18 @@ corPvalueStudent <- function(cor, nSamples) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~k-means cluster~~~~~~~~~~~~~~~~~~~~~~~~~
-rawCount <- rldData[, c(5:16, 25:36)]
+rmfull_all <- c(5:16, 25:36)
+sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At', 'AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
+
+rmfull_ath <- c(5:16)
+sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
+
+rmfull_lotus <- c(25:36)
+sampleN <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
+
+rawCount <- rldData[, rmfull_lotus]
 
 ## mean value of normalized count
-sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At', 'AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 meanCount <- rawCount %>%
   apply(1, meanFlg22) %>%
   t
@@ -194,8 +202,8 @@ ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   guides(colour = guide_legend(title = 'kmeans (k=10)'))
-ggsave(paste0(prefix, '_og_rmfull.pdf'))
-ggsave(paste0(prefix, '_og_rmfull.jpg'))
+ggsave(paste0(prefix, 'lotus_og_rmfull.pdf'))
+ggsave(paste0(prefix, 'lotus_og_rmfull.jpg'))
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
