@@ -284,7 +284,6 @@ remove full SynCom PCA plot
 
 ![kmeans_10_og_rmfull](results_orthologs/kmeans_10_og_rmfull.jpg)
 
-![kmeans_ath_10_og_rmfull](results_orthologs/kmeans_ath_10_og_rmfull.jpg)
-
-![kmeans_lotus_10_og_rmfull](results_orthologs/kmeans_lotus_10_og_rmfull.jpg)
+![kmeans_ath_10_og_rmfull](results_orthologs/kmeans_10_ath_og_rmfull.jpg)
+![kmeans_lotus_10_og_rmfull](results_orthologs/kmeans_10_lotus_og_rmfull.jpg)
 
