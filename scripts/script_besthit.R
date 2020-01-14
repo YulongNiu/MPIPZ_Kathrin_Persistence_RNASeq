@@ -93,8 +93,16 @@ anno <- read_delim('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/ortholog
   }) %>%
   bind_rows
 
-rbhMat %>%
+rbhAnno <- rbhMat %>%
   as_tibble %>%
   slice(seq(1, nrow(.), 2)) %>%
-  write_csv('tmp1.csv')
+  inner_join(anno, by = c('qseqid' = 'BlastID')) %>%
+  inner_join(anno, by = c('sseqid' = 'BlastID')) %>%
+  rename(ID_ath = ID.x, ID_lotus = ID.y) %>%
+  select(ID_ath, ID_lotus, everything()) %>% {
+    tibble(ID = c(.$ID_ath, .$ID_lotus),
+          RBH = rep(1:nrow(.), 2) %>% paste0('RBH', .))
+  }
+
+save(rbhAnno, file = 'rbhAnno.RData')
 #######################################################################
