@@ -62,5 +62,12 @@ blastt <- read_delim('Blast1_0.txt',
 
 rbhMat <- blastf %>%
   group_by(qseqid) %>%
-  do(RBH_(., blastt))
+  do(RBH_(., blastt)) %>%
+  ungroup
+
+save(rbhMat, file = '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/rbhMat.RData')
+#######################################################################
+
+################################RBM anno###############################
+library('tidyverse')
 #######################################################################
