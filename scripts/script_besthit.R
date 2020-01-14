@@ -70,4 +70,31 @@ save(rbhMat, file = '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results
 
 ################################RBM anno###############################
 library('tidyverse')
+library('magrittr')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs')
+
+load('rbhMat.RData')
+
+## preprocess anno
+anno <- read_delim('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/orthology_prediction_AtLj/AtLCollaborator/Results_Nov11/WorkingDirectory/SequenceIDs.txt', delim = '\t', col_names = c('Annotation')) %>%
+  .$Annotation %>%
+  strsplit(split = ':', fixed = TRUE) %>%
+  lapply(function(x) {
+    x %>%
+      str_trim %>%
+      {
+        eachBlastID <- .[1]
+        eachID <- .[2] %>%
+          strsplit(split = ' ', fixed = TRUE) %>%
+          sapply('[', 1)
+        return(tibble(BlastID = eachBlastID, ID = eachID))
+      }
+  }) %>%
+  bind_rows
+
+rbhMat %>%
+  as_tibble %>%
+  slice(seq(1, nrow(.), 2)) %>%
+  write_csv('tmp1.csv')
 #######################################################################

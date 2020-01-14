@@ -12,6 +12,9 @@
     - [2.2 TAIR Best hit](#22-tair-best-hit)
     - [2.3 PCA plot](#23-pca-plot)
     - [2.4 k-means cluster](#24-k-means-cluster)
+- [3. Reciprocal best hit](#3-reciprocal-best-hit)
+    - [3.1 RBH mapping](#31-rbh-mapping)
+    - [3.2 k-means cluster](#32-k-means-cluster)
 - [References](#references)
     
 <!-- content end -->
@@ -340,3 +343,28 @@ At8  0.1061 0.0781 0.0641 0.1149 0.0945 0.1003 0.1242 0.1108 0.0945 0.1125
 At9  0.0852 0.0821 0.0914 0.0991 0.1046 0.0837 0.1286 0.0999 0.1046 0.1208
 At10 0.1063 0.0896 0.0836 0.0824 0.0980 0.1063 0.1004 0.1195 0.1231 0.0908
 ```
+
+## 3. Reciprocal best hit
+
+### 3.1 RBH mapping
+
+Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --> At*) with E-value threshold `1e-06`. Get 42,926 pairs of 1-1 RBH.
+
+```
+   qseqid  sseqid pident length mismatch gapopen qstart qend sstart send
+1     0_0 1_40970 63.724    929      254       9     67  923     36  953
+2 1_40970     0_0 63.373    931      254       7     36  953     67  923
+3   0_100 1_40882 88.710    124       14       0      1  124      1  124
+4 1_40881   0_100 88.710    124       14       0      1  124      1  124
+5  0_1000 1_43549 50.431    464      214       8     11  466      9  464
+6 1_43549  0_1000 50.324    463      214       8     10  464     12  466
+     evalue bitscore
+1  0.00e+00     1151
+2  0.00e+00     1161
+3  3.54e-68      201
+4  4.43e-68      201
+5 6.80e-159      459
+6 4.36e-158      457
+```
+
+### 3.2 k-means cluster
