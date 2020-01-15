@@ -348,23 +348,23 @@ At10 0.1063 0.0896 0.0836 0.0824 0.0980 0.1063 0.1004 0.1195 0.1231 0.0908
 
 ### 3.1 RBH mapping
 
-Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --> At*) with E-value threshold `1e-06`. Get 42,926 pairs of 1-1 RBH.
+Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --> At*) with E-value threshold `1e-06` (sorted by `bitscore`). Get 12,451 pairs of 1-1 RBH.
 
 ```
-   qseqid  sseqid pident length mismatch gapopen qstart qend sstart send
-1     0_0 1_40970 63.724    929      254       9     67  923     36  953
-2 1_40970     0_0 63.373    931      254       7     36  953     67  923
-3   0_100 1_40882 88.710    124       14       0      1  124      1  124
-4 1_40881   0_100 88.710    124       14       0      1  124      1  124
-5  0_1000 1_43549 50.431    464      214       8     11  466      9  464
-6 1_43549  0_1000 50.324    463      214       8     10  464     12  466
-     evalue bitscore
-1  0.00e+00     1151
-2  0.00e+00     1161
-3  3.54e-68      201
-4  4.43e-68      201
-5 6.80e-159      459
-6 4.36e-158      457
+ qseqid  sseqid pident length mismatch gapopen qstart qend sstart send
+1 0_10000 1_13032 62.971    451      158       2     16  457      6  456
+2 0_10001 1_35555 61.824    592      143      10      1  584      1  517
+3 0_10005 1_37407 73.270    318       69       3     10  326     21  323
+4 0_10006  1_7193 65.926    135       34       3      1  132      1  126
+5 0_10011  1_5529 76.596    470      109       1     44  512     43  512
+6 0_10024 1_10909 66.162    792      268       0     11  802     18  809
+     evalue bitscore      ID_ath             ID_lotus
+1  0.00e+00      576 AT4G01400.1 LotjaGi1g1v0796800.1
+2  0.00e+00      699 AT2G01570.1 LotjaGi4g1v0359300.1
+3 2.82e-169      473 AT1G76570.1 LotjaGi5g1v0000500.1
+4  3.47e-59      179 AT5G13190.1 LotjaGi1g1v0441100.2
+5  0.00e+00      753 AT1G11870.2 LotjaGi1g1v0339700.1
+6  0.00e+00     1147 AT2G41720.3 LotjaGi1g1v0672300.2
 ```
 
 ### 3.2 k-means cluster
