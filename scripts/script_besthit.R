@@ -17,19 +17,20 @@ RBH_ <- function(eachf, allt, threshold = 1.0e-6) {
     return(eachf)
   } else {}
 
-  genef <- eachf$qseqid[1]
+  genef1 <- eachf$qseqid[1]
+  genet1 <- eachf$sseqid[1]
 
   eacht <- allt %>%
-    filter(sseqid %in% genef, evalue < threshold) %>%
+    filter(qseqid %in% genet1, evalue < threshold) %>%
     arrange(bitscore %>% desc())
-  genet <- eacht$sseqid[1]
+  genet2 <- eacht$sseqid[1]
 
   ## check genet exists
   if (nrow(eacht) == 0) {
     return(eacht)
   } else {}
 
-  if (genef == genet) {
+  if (genef1 == genet2) {
     return(bind_rows(eachf[1, , drop = FALSE],
               eacht[1, , drop = FALSE]))
   } else {
