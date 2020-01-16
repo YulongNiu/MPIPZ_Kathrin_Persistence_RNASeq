@@ -65,11 +65,18 @@ meanCount <- rawCount %>%
   t
 colnames(meanCount) <- sampleN
 
-## scale
-scaleCount <- meanCount %>%
+## scale within group
+scaleCountAt <- meanCount[, 1:3, drop = FALSE] %>%
   t %>%
   scale %>%
   t
+
+scaleCountLj <- meanCount[, 4:6, drop = FALSE] %>%
+  t %>%
+  scale %>%
+  t
+
+scaleCount <- cbind(scaleCountAt, scaleCountLj)
 scaleCount %<>% .[complete.cases(.), ]
 
 ## Cluster rows by Pearson correlation
@@ -168,13 +175,13 @@ ggsave('kmeans_AIC_RBH_rmfull.pdf')
 ggsave('kmeans_AIC_RBH_rmfull.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 16, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
+kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_16'
+prefix <- 'kmeans_10'
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -200,7 +207,7 @@ ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=16)'))
+  guides(colour = guide_legend(title = 'kmeans (k=10)'))
 
 ggsave(paste0(prefix, '_RBH_rmfull.pdf'), height = 10)
 ggsave(paste0(prefix, '_RBH_rmfull.jpg'), height = 10)

@@ -34,8 +34,8 @@ annoMerge <- inner_join(annoAth, annoLotus, by = c('RBH_At' = 'RBH_Lj')) %>%
 (rownames(kresAth) == rownames(kresLotus)) %>%
   sum(.) == nrow(kresAth)
 
-## full
-sampleIdx <- 1:36
+## ## full
+## sampleIdx <- 1:36
 
 ## without full
 sampleIdx <- c(5:16, 25:36)
@@ -56,24 +56,37 @@ rld <- rlog(degres)
 ntd <- normTransform(degres)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect between group~~~~~~~~~~
 library('sva')
 library('ggplot2')
+library('limma')
 
 dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
 
-mod <- model.matrix(~condition, colData(degres))
-mod0 <- model.matrix(~1, colData(degres))
+groupCond <- rep(c('Ath', 'Lotus'), each = 12) %>%
+  as.factor %>%
+  {data.frame(condition = .)} %>%
+  set_rownames(rownames(colData(degres)))
 
-## manual detect surrogate variance
-svnum <- 4
-svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
+mod <- model.matrix(~condition, groupCond)
+mod0 <- model.matrix(~1, groupCond)
+
+## ## manual detect surrogate variance
+## svnum <- 4
+## svseq <- svaseq(dat, mod, mod0, n.sv = svnum)
 
 ## auto detect sv
 svobj <- sva(dat, mod, mod0)
 svnum <- svobj$sv %>% ncol
+
+group <- groupCond$condition
+design <- model.matrix(~ group)
+dat %<>%
+  removeBatchEffect(covariates = svobj$sv,
+                    design = design)
 
 svobj$sv %>%
   set_colnames(paste0('sv', seq_len(svnum))) %>%
@@ -84,6 +97,61 @@ svobj$sv %>%
            rep(svnum) %>%
            as.character,
          sample = rep(colnames(degres), svnum)) %>%
+  mutate(group = paste(sv, condition, sep = '_')) %>%
+  ggplot(aes(sample, value, colour = sv, group = group)) +
+  geom_point() +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90))
+ggsave('auto_og_sv_6.jpg')
+ggsave('auto_og_sv_6.pdf')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~hidden batch effect in group~~~~~~~~~~~~~~~~
+library('sva')
+library('ggplot2')
+library('limma')
+
+## ath norm
+athCond <- colData(degres)[1:12, ]
+athCond$condition %<>% droplevels
+
+mod <- model.matrix(~condition, athCond)
+mod0 <- model.matrix(~1, athCond)
+
+svobjAth <- sva(dat[, 1:12], mod, mod0)
+svnumAth <- svobjAth$sv %>% ncol
+
+groupAth <- sampleTable$condition[1:12] %<>% droplevels
+designAth <- model.matrix(~ groupAth)
+dat[, 1:12] %<>%
+  removeBatchEffect(covariates = svobjAth$sv,
+                    design = designAth)
+
+## lotus norm
+lotusCond <- colData(degres)[13:24, ]
+lotusCond$condition %<>% droplevels
+
+mod <- model.matrix(~condition, lotusCond)
+mod0 <- model.matrix(~1, lotusCond)
+
+svobjLotus <- sva(dat[, 13:24], mod, mod0)
+svnumLotus <- svobjLotus$sv %>% ncol
+
+groupLotus <- sampleTable$condition[13:24] %<>% droplevels
+designLotus <- model.matrix(~ groupLotus)
+dat[, 13:24] %<>%
+  removeBatchEffect(covariates = svobjLotus$sv,
+                    design = designLotus)
+
+svobjLotus$sv %>%
+  set_colnames(paste0('sv', seq_len(svnumLotus))) %>%
+  as_tibble %>%
+  gather(key = 'sv', value = 'value') %>%
+  mutate(condition = lotusCond %>%
+           .$condition %>%
+           rep(svnumLotus) %>%
+           as.character,
+         sample = rep(colnames(dat[, 13:24]), svnumLotus)) %>%
   mutate(group = paste(sv, condition, sep = '_')) %>%
   ggplot(aes(sample, value, colour = sv, group = group)) +
   geom_point() +
@@ -137,30 +205,17 @@ write_csv(res, 'SynCom_vs_Mock_og_rmfull_sva_k.csv')
 library('ggrepel')
 library('ggplot2')
 library('RColorBrewer')
-library('limma')
-library('sva')
-
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dat <- rld %>%
-  assay %>%
-  {.[rowMeans(.) > 1, ]}
-
-group <- sampleTable$condition
-design <- model.matrix(~ group)
-rldData <- dat %>%
-  removeBatchEffect(covariates = svobj$sv,
-                    design = design)
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 cols <- brewer.pal(9, name = 'Set1')
 
-## full
-colorIdx <- 1:9
+## ## full
+## colorIdx <- 1:9
 
 ## without full
 colorIdx <- c(2:4, 7:9)
 
 ## 1 - 2 C
+rldData <- dat
 pca <- prcomp(t(rldData))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
