@@ -238,8 +238,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
         legend.text=element_text(size= 13),
         legend.title = element_text(size = 14))
 
-ggsave('PCA_RBH_rmfull_sva.pdf', width = 10)
-ggsave('PCA_RBH_rmfull_sva.jpg', width = 10)
+ggsave('PCA_RBH_rmfull_sva.pdf', width = 15)
+ggsave('PCA_RBH_rmfull_sva.jpg', width = 15)
 
 save(degres, rldData, file = 'degres_condi_RBH_rmfull.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
