@@ -51,11 +51,11 @@ corPvalueStudent <- function(cor, nSamples) {
 rmfull_all <- 1:24
 sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At', 'AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 
-rmfull_ath <- c(5:16)
-sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
+## rmfull_ath <- c(1:12)
+## sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
 
-rmfull_lotus <- c(25:36)
-sampleN <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
+## rmfull_lotus <- c(13:24)
+## sampleN <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
 
 rawCount <- rldData[, rmfull_all]
 
@@ -175,13 +175,13 @@ ggsave('kmeans_AIC_RBH_rmfull.pdf')
 ggsave('kmeans_AIC_RBH_rmfull.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
+kClust10 <- kmeans(scaleCount, centers = 16, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_10'
+prefix <- 'kmeans_16'
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -198,19 +198,23 @@ clusterCore <- clusterGene %>%
   group_by(cl) %>%
   summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
   mutate(cl = cl %>% paste0('cluster_', .)) %>%
-  gather(Sample, NorExpress, -1)
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+           strsplit(split = '_', fixed = TRUE) %>%
+           sapply('[', 2) %>%
+           paste(cl, ., sep = '_'))
 clusterCore$Sample %<>% factor(levels = sampleN, ordered = TRUE)
 
-ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
+ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
   geom_point() +
   geom_line() +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=10)'))
+  guides(colour = guide_legend(title = 'kmeans (k=16)'))
 
-ggsave(paste0(prefix, '_RBH_rmfull.pdf'), height = 10)
-ggsave(paste0(prefix, '_RBH_rmfull.jpg'), height = 10)
+ggsave(paste0(prefix, '_RBH_rmfull.pdf'))
+ggsave(paste0(prefix, '_RBH_rmfull.jpg'))
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
