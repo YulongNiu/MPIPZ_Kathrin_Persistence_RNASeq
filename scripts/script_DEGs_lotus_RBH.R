@@ -79,9 +79,9 @@ design(degres) <- ~sv1 + sv2 + sv3 + sv4 + condition
 
 degres <- DESeq(degres)
 
-cond <- list(c('AtSC_At', 'Mock_At'),
-             c('LjSC_At', 'Mock_At'),
-             c('AtSC_At', 'LjSC_At'))
+cond <- list(c('AtSCMloti_Lj', 'Mock_Lj'),
+             c('LjSC_Lj', 'Mock_Lj'),
+             c('AtSCMloti_Lj', 'LjSC_Lj'))
 
 resRaw <- lapply(cond,
                  function(x) {
@@ -98,11 +98,11 @@ res <- cbind.data.frame(as.matrix(mcols(degres)[, 1:10]), assay(rld), stringsAsF
   rownames_to_column(., var = 'ID') %>%
   as_tibble %>%
   bind_cols(resRaw) %>%
-  inner_join(annoAth, by = c('ID' = 'RBH_At')) %>%
-  select(ID, ID_At : Description_At, C_AtSC_1 : AtSC_At_vs_LjSC_At_log2FoldChange) %>%
-  arrange(AtSC_At_vs_Mock_At_padj)
+  inner_join(annoLotus, by = c('ID' = 'RBH_Lj')) %>%
+  select(ID, ID_Lj : Description_Lj, L_AtSCMloti_1 : AtSCMloti_Lj_vs_LjSC_Lj_log2FoldChange) %>%
+  arrange(AtSCMloti_Lj_vs_Mock_Lj_padj)
 
-write_csv(res, 'SynCom_vs_Mock_RBH_rmfull_ath_sva_k.csv')
+write_csv(res, 'SynCom_vs_Mock_RBH_rmfull_lotus_sva_k.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PCA~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

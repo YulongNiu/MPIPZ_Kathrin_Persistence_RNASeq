@@ -9,6 +9,21 @@ library('ParaMisc')
 
 setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs')
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~try normal within independent~~~~~~~~~~~~~~
+load('degres_condi_RBH_rmfull_ath.RData')
+rldDataAth <- rldData %>%
+  as.data.frame %>%
+  rownames_to_column('ID')
+
+load('degres_condi_RBH_rmfull_lotus.RData')
+rldDataLotus <- rldData %>%
+  as.data.frame %>%
+  rownames_to_column('ID')
+
+rldData <- inner_join(rldDataAth, rldDataLotus) %>%
+  column_to_rownames('ID')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 load('kresRBH.RData')
 
 load('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/rbhAnno.RData')
@@ -222,7 +237,9 @@ percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
 pca1 <- pca$x[,1]
 pca2 <- pca$x[,2]
-pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[, 1], ID = rownames(colData(rld)))
+## pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = colData(rld)[, 1], ID = rownames(colData(rld)))
+
+pcaData <- data.frame(PC1 = pca1, PC2 = pca2, Group = rep(c('C_AtSC', 'C_LjSC', 'C_mock', 'L_AtSCMloti', 'L_LjSC', 'L_mock'), each = 4), ID = colnames(rldData))
 ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +

@@ -14,6 +14,22 @@ library('dplyr')
 library('RColorBrewer')
 library('gridExtra')
 library('cluster')
+library('scales')
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~try normal within independent~~~~~~~~~~~~~~
+load('degres_condi_RBH_rmfull_ath.RData')
+rldDataAth <- rldData %>%
+  as.data.frame %>%
+  rownames_to_column('ID')
+
+load('degres_condi_RBH_rmfull_lotus.RData')
+rldDataLotus <- rldData %>%
+  as.data.frame %>%
+  rownames_to_column('ID')
+
+rldData <- inner_join(rldDataAth, rldDataLotus) %>%
+  column_to_rownames('ID')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 load('degres_condi_RBH_rmfull.RData')
 
@@ -175,13 +191,14 @@ ggsave('kmeans_AIC_RBH_rmfull.pdf')
 ggsave('kmeans_AIC_RBH_rmfull.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 16, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
+clNum <- 16
+kClust10 <- kmeans(scaleCount, centers = clNum, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_16'
+prefix <- paste('kmeans_', clNum)
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -197,21 +214,30 @@ clusterGene <- scaleCount %>%
 clusterCore <- clusterGene %>%
   group_by(cl) %>%
   summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
-  mutate(cl = cl %>% paste0('cluster_', .)) %>%
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
   gather(Sample, NorExpress, -1) %>%
   mutate(host = Sample %>%
-           strsplit(split = '_', fixed = TRUE) %>%
-           sapply('[', 2) %>%
-           paste(cl, ., sep = '_'))
-clusterCore$Sample %<>% factor(levels = sampleN, ordered = TRUE)
+         strsplit(split = '_', fixed = TRUE) %>%
+         sapply('[', 2) %>%
+         paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleN, ordered = TRUE))
 
 ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
   geom_point() +
   geom_line() +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=16)'))
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = kClust10$cluster %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = kClust10$cluster %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ggsave(paste0(prefix, '_RBH_rmfull.pdf'))
 ggsave(paste0(prefix, '_RBH_rmfull.jpg'))
