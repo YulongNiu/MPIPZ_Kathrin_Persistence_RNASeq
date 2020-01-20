@@ -191,14 +191,14 @@ ggsave('kmeans_AIC_RBH_rmfull.pdf')
 ggsave('kmeans_AIC_RBH_rmfull.jpg')
 
 ## execute
-clNum <- 16
+clNum <- 14
 kClust10 <- kmeans(scaleCount, centers = clNum, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- paste('kmeans_', clNum)
+prefix <- paste0('kmeans_', clNum)
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -261,4 +261,4 @@ ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.pdf'), width = 10, dpi = 320)
 ggsave(paste0(prefix, '_genes_lotus_rmfull_rmAtSC.jpg'), width = 10, dpi = 320)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-write_csv(clusterGene, '_ath_og_rmfull.csv')
+write_csv(clusterGene, paste0(prefix, '_RBH_rmfull.csv'))
