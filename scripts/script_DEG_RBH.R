@@ -118,6 +118,7 @@ athCond$condition %<>% droplevels
 mod <- model.matrix(~condition, athCond)
 mod0 <- model.matrix(~1, athCond)
 
+## svobjAth <- svaseq(dat[, 1:12], mod, mod0, n.sv = 3)
 svobjAth <- sva(dat[, 1:12], mod, mod0)
 svnumAth <- svobjAth$sv %>% ncol
 
