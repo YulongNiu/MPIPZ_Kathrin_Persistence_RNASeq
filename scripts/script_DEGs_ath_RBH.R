@@ -156,3 +156,4 @@ ggsave('PCA_RBH_rmfull_ath_sva.pdf', width = 10)
 ggsave('PCA_RBH_rmfull_ath_sva.jpg', width = 10)
 
 save(degres, rldData, file = 'degres_condi_RBH_rmfull_ath.RData')
+########################################################################
