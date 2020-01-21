@@ -1,3 +1,4 @@
+################################orthologs###############################
 library('tidyverse')
 library('limma')
 library('DESeq2')
@@ -275,3 +276,72 @@ for (i in seq_len(10)) {
 
 interMat %>% round(digits = 4)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#######################################################################
+
+################################RBH###############################
+library('tidyverse')
+library('limma')
+library('DESeq2')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/')
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~separate~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## all transcripts
+kmeansAth <- read_csv('kmeans_12_RBH_ath_rmfull.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(athcl = cl)
+
+kmeansLotus <- read_csv('kmeans_12_RBH_lotus_rmfull.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(lotuscl = cl)
+
+mergeKmeans <- inner_join(kmeansAth, kmeansLotus)
+
+ath2lotus <- foreach(i = 1:12) %do% {
+  mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table %>%
+    sort(decreasing = TRUE)
+}
+names(ath2lotus) <- 1:10
+
+lotus2ath <- foreach(i = 1:10) %do% {
+  mergeKmeans %>%
+    filter(lotuscl %in% i) %>%
+    .$athcl %>%
+    table %>%
+    sort(decreasing = TRUE)
+}
+names(lotus2ath) <- 1:10
+
+interMat <- matrix(ncol = 12, nrow = 12, dimnames = list(paste0('At', 1:12), paste0('Lj', 1:12)))
+for (i in seq_len(12)) {
+
+  interNum <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+
+  unionNum <- ((mergeKmeans$athcl %in% i) %>% length) + (mergeKmeans$lotuscl %>% table) - interNum
+
+  interMat[i, ] <- interNum / unionNum
+}
+
+interMat %>% round(digits = 5)
+
+## only DEGs
+kmeansAthDEG <- read_csv('../results_orthologs/heatsigAth.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(athID = ID, athcl = cl) %>%
+  inner_join(orthoAnno, by = c('athID' = 'ID'))
+
+kmeansLotusDEG <- read_csv('../results_orthologs/heatsigLotus.csv') %>%
+  select(ID, cl) %>%
+  dplyr::rename(lotusID = ID, lotuscl = cl) %>%
+  inner_join(orthoAnno, by = c('lotusID' = 'ID'))
+
+mergeKmeansDEG <- inner_join(kmeansAthDEG, kmeansLotusDEG)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##################################################################

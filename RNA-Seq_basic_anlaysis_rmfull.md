@@ -372,16 +372,47 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 ![PCA_RBH_rmfull_sva](results_orthologs/PCA_RBH_rmfull_sva.jpg)
 
-![PCA_RBH_rmfull_ath_sva](results_orthologs/PCA_RBH_rmfull_ath_sva.jpg)
-
-![PCA_RBH_rmfull_lotus_sva](results_orthologs/PCA_RBH_rmfull_lotus_sva.jpg)
-
 ![kmeans_12_RBH_rmfull](results_orthologs/kmeans_12_RBH_rmfull.jpg)
 
 ![kmeans_16_RBH_rmfull](results_orthologs/kmeans_16_RBH_rmfull.jpg)
 
 ### 3.3 k-means cluster separate
 
+![PCA_RBH_rmfull_ath_sva](results_orthologs/PCA_RBH_rmfull_ath_sva.jpg)
+
+![PCA_RBH_rmfull_lotus_sva](results_orthologs/PCA_RBH_rmfull_lotus_sva.jpg)
+
 ![kmeans_12_RBH_ath_rmfull](results_orthologs/kmeans_12_RBH_ath_rmfull.jpg)
 
 ![kmeans_12_RBH_lotus_rmfull](results_orthologs/kmeans_12_RBH_lotus_rmfull.jpg)
+
+Jaccard similarity
+
+```
+        Lj1    Lj2    Lj3    Lj4    Lj5    Lj6    Lj7    Lj8    Lj9   Lj10
+At1  0.0066 0.0057 0.0076 0.0084 0.0081 0.0084 0.0092 0.0100 0.0065 0.0082
+At2  0.0055 0.0047 0.0040 0.0057 0.0041 0.0048 0.0049 0.0061 0.0043 0.0036
+At3  0.0092 0.0081 0.0106 0.0089 0.0068 0.0076 0.0083 0.0100 0.0064 0.0077
+At4  0.0053 0.0059 0.0071 0.0086 0.0044 0.0070 0.0052 0.0084 0.0058 0.0070
+At5  0.0052 0.0067 0.0067 0.0076 0.0055 0.0064 0.0072 0.0082 0.0054 0.0074
+At6  0.0068 0.0073 0.0079 0.0097 0.0081 0.0068 0.0105 0.0091 0.0072 0.0083
+At7  0.0046 0.0035 0.0056 0.0040 0.0037 0.0044 0.0055 0.0055 0.0037 0.0036
+At8  0.0044 0.0056 0.0071 0.0063 0.0056 0.0050 0.0062 0.0063 0.0047 0.0058
+At9  0.0044 0.0056 0.0056 0.0054 0.0039 0.0045 0.0046 0.0057 0.0051 0.0055
+At10 0.0081 0.0096 0.0105 0.0102 0.0101 0.0074 0.0091 0.0075 0.0077 0.0073
+At11 0.0052 0.0060 0.0071 0.0061 0.0059 0.0064 0.0076 0.0069 0.0055 0.0060
+At12 0.0038 0.0052 0.0071 0.0053 0.0035 0.0052 0.0054 0.0055 0.0035 0.0063
+       Lj11   Lj12
+At1  0.0107 0.0071
+At2  0.0038 0.0049
+At3  0.0096 0.0069
+At4  0.0061 0.0058
+At5  0.0070 0.0064
+At6  0.0075 0.0077
+At7  0.0049 0.0036
+At8  0.0063 0.0052
+At9  0.0063 0.0046
+At10 0.0085 0.0085
+At11 0.0073 0.0058
+At12 0.0045 0.0046
+```
