@@ -1,5 +1,5 @@
 ######################hierarchical clustering####################
-setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/')
 
 library('readr')
 library('magrittr')
@@ -14,10 +14,11 @@ library('dplyr')
 library('RColorBrewer')
 library('gridExtra')
 library('cluster')
+library('scales')
 
-load('degres_condi_Mock_lotus.RData')
-deganno <- read_csv('SynCom_vs_Mock_lotus_sva_k.csv',
-                    col_types = cols(Chromosome = col_character()))
+load('degres_condi_RBH_rmfull_lotus.RData')
+deganno <- read_csv('SynCom_vs_Mock_RBH_rmfull_lotus_sva_k.csv',
+                    col_types = cols(Chromosome_Lj = col_character()))
 
 ##~~~~~~~~~~~~~~~~~~~~~~useful funcs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 meanFlg22 <- function(v) {
@@ -50,7 +51,7 @@ corPvalueStudent <- function(cor, nSamples) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~k-means cluster~~~~~~~~~~~~~~~~~~~~~~~~~
-rawCount <- rldData[, c(-1:-8)]
+rawCount <- rldData
 
 ## mean value of normalized count
 ## sampleN <- c('fullSC', 'AtSC', 'AtSCMloti', 'LjSC', 'Mock')
@@ -165,13 +166,14 @@ ggsave('kmeans_AIC_lotus_rmfull_rmAtSC.pdf')
 ggsave('kmeans_AIC_lotus_rmfull_rmAtSC.jpg')
 
 ## execute
-kClust10 <- kmeans(scaleCount, centers = 10, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
+clNum <- 12
+kClust10 <- kmeans(scaleCount, centers = clNum, algorithm = 'MacQueen', nstart = 1000, iter.max = 20)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~plot patterns~~~~~~~~~~~~~~~~~~~~~~~~
 cl <- kClust10$cluster
-prefix <- 'kmeans_10'
+prefix <- paste0('kmeans_', clNum)
 
 clusterGene <- scaleCount %>%
   as.data.frame %>%
@@ -187,19 +189,33 @@ clusterGene <- scaleCount %>%
 clusterCore <- clusterGene %>%
   group_by(cl) %>%
   summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
-  mutate(cl = cl %>% paste0('cluster_', .)) %>%
-  gather(Sample, NorExpress, -1)
-clusterCore$Sample %<>% factor(levels = sampleN, ordered = TRUE)
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+         strsplit(split = '_', fixed = TRUE) %>%
+         sapply('[', 2) %>%
+         paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleN, ordered = TRUE))
 
-ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = cl)) +
+ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
   geom_point() +
   geom_line() +
   facet_wrap(. ~ cl, ncol = 2) +
   ylab('Scaled counts') +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  guides(colour = guide_legend(title = 'kmeans (k=10)'))
-ggsave(paste0(prefix, '_lotus_rmfull_rmAtSC.pdf'))
-ggsave(paste0(prefix, '_lotus_rmfull_rmAtSC.jpg'))
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = kClust10$cluster %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = kClust10$cluster %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(paste0(prefix, '_RBH_lotus_rmfull.pdf'))
+ggsave(paste0(prefix, '_RBH_lotus_rmfull.jpg'))
 
 ## plot all genes
 clusterGenePlot <- clusterGene %>%
@@ -289,7 +305,7 @@ rawC <- rawCount %>%
   rename_at(-1, .funs = list(~paste0('Raw_', .)))
 
 degresC <- deganno %>%
-  select(ID, fullSC_vs_Mock_pvalue : LjSC_vs_Mock_log2FoldChange)
+  select(ID, AtSCMloti_Lj_vs_Mock_Lj_pvalue : AtSCMloti_Lj_vs_LjSC_Lj_log2FoldChange)
 
 heatPlot <- rawC %>%
   inner_join(scaleC) %>%
@@ -300,7 +316,7 @@ heatPlot <- rawC %>%
     inner_join(., cl)
   } %T>%
   {(sum(names(cl) == .$ID) == nrow(.)) %>% print} %>% ## check cl names and degresC row names
-  slice(cl %>% order)
+  dplyr::slice(cl %>% order)
 
 heatRawPlot <- heatPlot %>%
   select(ID, starts_with('Raw')) %>%
@@ -523,6 +539,6 @@ ggsave(file = paste0(prefix, '_heatmap_merge_lotus_collaborator.jpg'), plot = g,
 
 ## write the cluster file
 inner_join(deganno, heatPlot) %>%
-  mutate_at(c('Gene', 'Description'), .funs = list(~if_else(is.na(.), '', .))) %>%
-  write_csv(paste0(prefix, '_lotus_rmfull_rmAtSC.csv'))
+  mutate_at(c('Gene_Lj', 'Description_Lj'), .funs = list(~if_else(is.na(.), '', .))) %>%
+  write_csv(paste0(prefix, '_RBH_lotus_rmfull.csv'))
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

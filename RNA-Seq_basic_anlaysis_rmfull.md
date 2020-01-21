@@ -14,7 +14,8 @@
     - [2.4 k-means cluster](#24-k-means-cluster)
 - [3. Reciprocal best hit](#3-reciprocal-best-hit)
     - [3.1 RBH mapping](#31-rbh-mapping)
-    - [3.2 k-means cluster](#32-k-means-cluster)
+    - [3.2 k-means cluster merge](#32-k-means-cluster-merge)
+    - [3.3 k-means cluster separate](#33-k-means-cluster-separate)
 - [References](#references)
     
 <!-- content end -->
@@ -367,7 +368,7 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 6  0.00e+00     1147 AT2G41720.3 LotjaGi1g1v0672300.2
 ```
 
-### 3.2 k-means cluster
+### 3.2 k-means cluster merge
 
 ![PCA_RBH_rmfull_sva](results_orthologs/PCA_RBH_rmfull_sva.jpg)
 
@@ -379,3 +380,8 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 ![kmeans_16_RBH_rmfull](results_orthologs/kmeans_16_RBH_rmfull.jpg)
 
+### 3.3 k-means cluster separate
+
+![kmeans_12_RBH_ath_rmfull](results_orthologs/kmeans_12_RBH_ath_rmfull.jpg)
+
+![kmeans_12_RBH_lotus_rmfull](results_orthologs/kmeans_12_RBH_lotus_rmfull.jpg)
