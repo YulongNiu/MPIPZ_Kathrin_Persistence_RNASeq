@@ -344,4 +344,52 @@ kmeansLotusDEG <- read_csv('../results_orthologs/heatsigLotus.csv') %>%
 mergeKmeansDEG <- inner_join(kmeansAthDEG, kmeansLotusDEG)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~map RBH to raw heatmap~~~~~~~~~~~~~~~~~
+## raw cluster
+rawPath <- '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/'
+
+## all transcripts
+kmeansAth <- read_csv('kmeans_12_RBH_ath_rmfull.csv') %>%
+  select(ID, ID_At) %>%
+  dplyr::rename(RBHID = ID) %>% {
+    rawCluster <- file.path(rawPath, 'kmeans_10_ath.csv') %>%
+      read_csv
+
+      inner_join(rawCluster, ., c('ID' = 'ID_At'))
+  } %>%
+  select(RBHID, cl) %>%
+  dplyr::rename(athcl = cl)
+
+kmeansLotus <- read_csv('kmeans_12_RBH_lotus_rmfull.csv') %>%
+  select(ID, ID_Lj) %>%
+  dplyr::rename(RBHID = ID) %>% {
+    rawCluster <- file.path(rawPath, 'kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
+      read_csv
+
+    inner_join(rawCluster, ., c('ID' = 'ID_Lj'))
+  } %>%
+  select(RBHID, cl) %>%
+  dplyr::rename(lotuscl = cl)
+
+mergeKmeans <- inner_join(kmeansAth, kmeansLotus)
+
+interMat <- matrix(ncol = 10, nrow = 10, dimnames = list(paste0('At', 1:10), paste0('Lj', 1:10)))
+for (i in seq_len(10)) {
+
+  interNum <- mergeKmeans %>%
+    filter(athcl %in% i) %>%
+    .$lotuscl %>%
+    table
+
+  unionNum <- ((mergeKmeans$athcl %in% i) %>% length) + (mergeKmeans$lotuscl %>% table) - interNum
+
+  interMat[i, ] <- interNum / unionNum
+}
+
+interMat %>% round(digits = 5)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##################################################################
+
+########################Ath cluster to Lotus######################
+library('tidyverse')
