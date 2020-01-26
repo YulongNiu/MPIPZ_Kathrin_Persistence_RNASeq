@@ -55,7 +55,7 @@ rawCount <- rldData
 
 ## mean value of normalized count
 ## sampleN <- c('fullSC', 'AtSC', 'LjSC', 'Mock')
-sampleN <- c('AtSC', 'LjSC', 'Mock')
+sampleN <- c('AtSC_At', 'LjSC_At', 'Mock_At')
 meanCount <- rawCount %>%
   apply(1, meanFlg22) %>%
   t

@@ -432,3 +432,9 @@ At8  0.0139 0.0133 0.0132 0.0152 0.0112 0.0151 0.0177 0.0118 0.0194 0.0135
 At9  0.0097 0.0104 0.0085 0.0124 0.0068 0.0136 0.0109 0.0123 0.0137 0.0108
 At10 0.0091 0.0080 0.0074 0.0110 0.0102 0.0113 0.0106 0.0098 0.0102 0.0077
 ```
+
+Mapping clusters
+
+![kmeans_12_RBH_ath2lotus](results_orthologs/kmeans_12_RBH_ath2lotus.jpg)
+
+![kmeans_12_RBH_lotus2ath](results_orthologs/kmeans_12_RBH_lotus2ath.jpg)

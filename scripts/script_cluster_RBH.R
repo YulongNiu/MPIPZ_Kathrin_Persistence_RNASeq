@@ -191,7 +191,7 @@ ggsave('kmeans_AIC_RBH_rmfull.pdf')
 ggsave('kmeans_AIC_RBH_rmfull.jpg')
 
 ## execute
-clNum <- 14
+clNum <- 12
 kClust10 <- kmeans(scaleCount, centers = clNum, algorithm = 'MacQueen', nstart = 1000, iter.max = 16)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

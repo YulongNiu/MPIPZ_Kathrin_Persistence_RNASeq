@@ -393,3 +393,158 @@ interMat %>% round(digits = 5)
 
 ########################Ath cluster to Lotus######################
 library('tidyverse')
+library('scales')
+library('cowplot')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/')
+
+clNum <- 12
+
+athCluster <- read_csv('kmeans_12_RBH_ath_rmfull.csv') %>%
+  select(ID, cl) %>%
+  inner_join(read_csv('kmeans_12_RBH_ath_lotus_rmfull_clusterGene.csv')) %>%
+  select(ID, AtSC_At : Mock_Lj, cl)
+
+sampleNAth <- c('AtSC_At', 'LjSC_At', 'Mock_At')
+sampleNLotus <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
+
+clusterCore <- athCluster %>%
+  select(ID, AtSC_At : Mock_At, cl) %>%
+  group_by(cl) %>%
+  summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+           strsplit(split = '_', fixed = TRUE) %>%
+           sapply('[', 2) %>%
+           paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleNAth, ordered = TRUE))
+
+athClusterPlot <- ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(. ~ cl, ncol = 2) +
+  ylab('Scaled counts') +
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = athCluster$cl %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = athCluster$cl %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+clusterCore <- athCluster %>%
+  select(ID, AtSCMloti_Lj, LjSC_Lj, Mock_Lj, cl) %>%
+  group_by(cl) %>%
+  summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+           strsplit(split = '_', fixed = TRUE) %>%
+           sapply('[', 2) %>%
+           paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleNLotus, ordered = TRUE))
+
+lotusClusterPlot <- ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(. ~ cl, ncol = 2) +
+  ylab('Scaled counts') +
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = athCluster$cl %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = athCluster$cl %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+plot_grid(athClusterPlot, lotusClusterPlot)
+ggsave('kmeans_12_RBH_ath2lotus.jpg', width = 15)
+##################################################################
+
+########################Lotus cluster to Ath######################
+library('tidyverse')
+library('scales')
+library('cowplot')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs/')
+
+clNum <- 12
+
+lotusCluster <- read_csv('kmeans_12_RBH_lotus_rmfull.csv') %>%
+  select(ID, cl) %>%
+  inner_join(read_csv('kmeans_12_RBH_ath_lotus_rmfull_clusterGene.csv')) %>%
+  select(ID, AtSC_At : Mock_Lj, cl)
+
+sampleNAth <- c('AtSC_At', 'LjSC_At', 'Mock_At')
+sampleNLotus <- c('AtSCMloti_Lj', 'LjSC_Lj', 'Mock_Lj')
+
+clusterCore <- lotusCluster %>%
+  select(ID, AtSC_At : Mock_At, cl) %>%
+  group_by(cl) %>%
+  summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+           strsplit(split = '_', fixed = TRUE) %>%
+           sapply('[', 2) %>%
+           paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleNAth, ordered = TRUE))
+
+athClusterPlot <- ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(. ~ cl, ncol = 2) +
+  ylab('Scaled counts') +
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = lotusCluster$cl %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = lotusCluster$cl %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+clusterCore <- lotusCluster %>%
+  select(ID, AtSCMloti_Lj, LjSC_Lj, Mock_Lj, cl) %>%
+  group_by(cl) %>%
+  summarise_at(-1, mean, na.rm = TRUE) %>% ## mean of each cluster
+  mutate(cl = paste0('cluster_', cl) %>%
+           factor(levels = paste0('cluster_', cl))) %>%
+  gather(Sample, NorExpress, -1) %>%
+  mutate(host = Sample %>%
+           strsplit(split = '_', fixed = TRUE) %>%
+           sapply('[', 2) %>%
+           paste(cl, ., sep = '_')) %>%
+  mutate(Sample = Sample %>% factor(levels = sampleNLotus, ordered = TRUE))
+
+lotusClusterPlot <- ggplot(clusterCore, aes(Sample, NorExpress, col = cl, group = host)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(. ~ cl, ncol = 2) +
+  ylab('Scaled counts') +
+  scale_color_manual(values = hue_pal()(clNum),
+                     breaks = lotusCluster$cl %>%
+                       table %>%
+                       names %>%
+                       paste0('cluster_', .),
+                     labels = lotusCluster$cl %>%
+                       table %>%
+                       {paste0('cluster_', names(.), ' ', .)},
+                     guide = guide_legend(title = paste0('kmeans (k = ',clNum, ')'))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+plot_grid(lotusClusterPlot, athClusterPlot)
+ggsave('kmeans_12_RBH_lotus2ath.jpg', width = 15)
+##################################################################
