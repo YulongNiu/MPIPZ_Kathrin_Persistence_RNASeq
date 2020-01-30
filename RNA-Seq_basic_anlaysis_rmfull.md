@@ -374,6 +374,10 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 ![kmeans_12_RBH_rmfull](results_orthologs/kmeans_12_RBH_rmfull.jpg)
 
+![kmeans_12_RBH_rmfull_heatmap](results_orthologs/kmeans_12_RBH_rmfull_heatmap)
+
+![kmeans_16_RBH_rmfull_heatmap](results_orthologs/kmeans_16_RBH_rmfull_heatmap.jpg)
+
 ![kmeans_16_RBH_rmfull](results_orthologs/kmeans_16_RBH_rmfull.jpg)
 
 ### 3.3 k-means cluster separate
