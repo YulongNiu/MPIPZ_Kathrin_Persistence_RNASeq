@@ -372,6 +372,8 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 ![PCA_RBH_rmfull_sva](results_orthologs/PCA_RBH_rmfull_sva.jpg)
 
+![PCA_RBH_rmfull_sva_rmcluster](results_orthologs/PCA_RBH_rmfull_sva_rmcluster.jpg)
+
 ![kmeans_12_RBH_rmfull](results_orthologs/kmeans_12_RBH_rmfull.jpg)
 
 ![kmeans_12_RBH_rmfull_heatmap](results_orthologs/kmeans_12_RBH_rmfull_heatmap.jpg)

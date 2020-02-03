@@ -1,4 +1,5 @@
 ################################normalization#########################
+library('tidyverse')
 library('tximport')
 library('rhdf5')
 library('magrittr')
@@ -6,6 +7,7 @@ library('DESeq2')
 library('tidyverse')
 library('foreach')
 library('ParaMisc')
+
 
 setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_orthologs')
 
@@ -22,6 +24,10 @@ rldDataLotus <- rldData %>%
 
 rldData <- inner_join(rldDataAth, rldDataLotus) %>%
   column_to_rownames('ID')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~try remove clusters~~~~~~~~~~~~~~~~~~~~~
+kmeansRes <- read_csv('kmeans_12_RBH_rmfull.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 load('kresRBH.RData')
@@ -230,8 +236,15 @@ cols <- brewer.pal(9, name = 'Set1')
 ## without full
 colorIdx <- c(2:4, 7:9)
 
-## 1 - 2 C
+## try remove clusters
+rldData <- kmeansRes %>%
+  dplyr::filter(cl %in% c(1, 2, 3, 4, 7, 10, 11)) %>%
+  .$ID %>%
+  {dat[rownames(dat) %in% ., ]}
+
+## whole cluster
 rldData <- dat
+
 pca <- prcomp(t(rldData))
 percentVar <- pca$sdev^2/sum(pca$sdev^2)
 percentVar <- round(100 * percentVar)
@@ -256,8 +269,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
         legend.text=element_text(size= 13),
         legend.title = element_text(size = 14))
 
-ggsave('PCA_RBH_rmfull_sva.pdf', width = 15)
-ggsave('PCA_RBH_rmfull_sva.jpg', width = 15)
+ggsave('PCA_RBH_rmfull_sva_rmcluster.pdf', width = 15)
+ggsave('PCA_RBH_rmfull_sva_rmcluster.jpg', width = 15)
 
 save(degres, rldData, file = 'degres_condi_RBH_rmfull.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
