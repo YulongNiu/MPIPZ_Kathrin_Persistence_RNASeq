@@ -388,7 +388,7 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 * DEGs in *At* by `C_AtSC vs. C_LjSC`
 
-DEGs threshold `adj p-value < 0.1` and `|log2FC| > log2(1.5)`
+DEGs (40) threshold `adj p-value < 0.1` and `|log2FC| > log2(1.5)`
 
 ![kmeans_12_RBH_rmfull_heatmap_athdegs](results_orthologs/kmeans_12_RBH_rmfull_heatmap_athdegs.jpg)
 
