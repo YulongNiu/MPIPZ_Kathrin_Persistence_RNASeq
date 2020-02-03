@@ -87,6 +87,13 @@ dat <- rld %>%
   assay %>%
   {.[rowMeans(.) > 1, ]}
 
+## try remove clusters
+dat <- kmeansRes %>%
+  dplyr::filter(cl %in% c(1, 2, 3, 4, 7, 10, 11)) %>%
+  .$ID %>%
+  {dat[rownames(dat) %in% ., ]}
+
+
 groupCond <- rep(c('Ath', 'Lotus'), each = 12) %>%
   as.factor %>%
   {data.frame(condition = .)} %>%
@@ -269,8 +276,8 @@ ggplot(pcaData, aes(x = PC1, y = PC2, colour = Group, label = ID)) +
         legend.text=element_text(size= 13),
         legend.title = element_text(size = 14))
 
-ggsave('PCA_RBH_rmfull_sva_rmcluster.pdf', width = 15)
-ggsave('PCA_RBH_rmfull_sva_rmcluster.jpg', width = 15)
+ggsave('PCA_RBH_rmfull_rmcluster_beforeSVA.pdf', width = 15)
+ggsave('PCA_RBH_rmfull_rmcluster_beforeSVA.jpg', width = 15)
 
 save(degres, rldData, file = 'degres_condi_RBH_rmfull.RData')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

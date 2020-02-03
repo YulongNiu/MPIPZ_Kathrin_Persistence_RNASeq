@@ -370,9 +370,17 @@ Retrieve reciprocal best hit (RBH) from pair-wise BLASTp (*At --> Lj* and *Lj --
 
 ### 3.2 k-means cluster merge
 
+* whole `11188` RBH transcripts
+
 ![PCA_RBH_rmfull_sva](results_orthologs/PCA_RBH_rmfull_sva.jpg)
 
-![PCA_RBH_rmfull_sva_rmcluster](results_orthologs/PCA_RBH_rmfull_sva_rmcluster.jpg)
+* `5476` RBH transcripts (remove cluster `5`, `6`, `8`, `9`, `12`) after SVA
+
+![PCA_RBH_rmfull_rmcluster_afterSVA](results_orthologs/PCA_RBH_rmfull_rmcluster_afterSVA.jpg)
+
+* `5476` RBH transcripts (remove cluster `5`, `6`, `8`, `9`, `12`) before SVA
+
+![PCA_RBH_rmfull_rmcluster_beforeSVA](results_orthologs/PCA_RBH_rmfull_rmcluster_beforeSVA.jpg)
 
 ![kmeans_12_RBH_rmfull](results_orthologs/kmeans_12_RBH_rmfull.jpg)
 
