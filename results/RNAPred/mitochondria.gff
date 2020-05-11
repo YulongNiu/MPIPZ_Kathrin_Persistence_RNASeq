@@ -1,0 +1,13 @@
+##gff-version2
+##source-version RNAmmer-1.2
+##date 2020-02-10
+##Type DNA
+# seqname           source                      feature     start      end   score   +/-  frame  attribute
+# ---------------------------------------------------------------------------------------------------------
+LjG1.1_chloro	RNAmmer-1.2	rRNA	101924	104942	2451.0	+	.	23s_rRNA	
+LjG1.1_chloro	RNAmmer-1.2	rRNA	127515	130533	2451.0	-	.	23s_rRNA	
+LjG1.1_chloro	RNAmmer-1.2	rRNA	98258	99735	1731.9	+	.	16s_rRNA	
+LjG1.1_chloro	RNAmmer-1.2	rRNA	132722	134199	1731.9	-	.	16s_rRNA	
+LjG1.1_chloro	RNAmmer-1.2	rRNA	105164	105279	52.0	+	.	5s_rRNA	
+LjG1.1_chloro	RNAmmer-1.2	rRNA	127178	127293	52.0	-	.	5s_rRNA	
+# ---------------------------------------------------------------------------------------------------------

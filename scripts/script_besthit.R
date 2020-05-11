@@ -1,3 +1,7 @@
+
+## originally by Yulong Niu
+## yulong.niu@hotmail.com
+
 ##########################Best hit######################################
 ##~~~~~~~~~~~~~~~~~~~~~~~~~Useful funcs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 RBH_ <- function(eachf, allt, threshold = 1.0e-6) {

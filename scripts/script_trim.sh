@@ -1,3 +1,7 @@
+
+## originally by Yulong Niu
+## yulong.niu@hotmail.com
+
 date
 
 RAW_PATH=/netscratch/dep_psl/grp_rgo/yniu/KathrinPersistence/raw_data

@@ -1,3 +1,7 @@
+
+## originally by Yulong Niu
+## yulong.niu@hotmail.com
+
 library('tximport')
 library('rhdf5')
 library('magrittr')

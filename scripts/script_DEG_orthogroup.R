@@ -1,3 +1,7 @@
+
+## originally by Yulong Niu
+## yulong.niu@hotmail.com
+
 ###############################normalization#####################
 library('tximport')
 library('rhdf5')

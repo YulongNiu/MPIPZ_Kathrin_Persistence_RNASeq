@@ -1,0 +1,10 @@
+##gff-version2
+##source-version RNAmmer-1.2
+##date 2020-02-10
+##Type DNA
+# seqname           source                      feature     start      end   score   +/-  frame  attribute
+# ---------------------------------------------------------------------------------------------------------
+LjG1.1_mito	RNAmmer-1.2	rRNA	214371	216352	1224.7	-	.	16s_rRNA	
+LjG1.1_mito	RNAmmer-1.2	rRNA	214078	214183	20.1	-	.	5s_rRNA	
+LjG1.1_mito	RNAmmer-1.2	rRNA	178777	181926	1713.2	-	.	23s_rRNA	
+# ---------------------------------------------------------------------------------------------------------

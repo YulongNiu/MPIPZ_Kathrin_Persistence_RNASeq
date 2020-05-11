@@ -1,3 +1,7 @@
+
+## originally by Yulong Niu
+## yulong.niu@hotmail.com
+
 ##############################merge/rename fq###########################
 library('foreach')
 library('doParallel')
