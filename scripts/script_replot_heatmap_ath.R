@@ -178,4 +178,29 @@ Heatmap(matrix = scaleC %>% select(contains('C_')),
         top_annotation = c(syncom))
 
 dev.off()
+
+## GO analysis
+library('clusterProfiler')
+library('org.At.tair.db')
+
+kall <- lapply(kmeansRes$cl %>% unique, function(x) {
+
+  eachG <- kmeansRes %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unlist %>% unique
+
+  return(eachG)
+
+}) %>%
+  set_names(kmeansRes$cl %>% unique %>% paste0('cluster', .))
+
+kallGOBP <- compareCluster(geneCluster = kall[1],
+                           fun = 'enrichGO',
+                           OrgDb = 'org.At.tair.db',
+                           keyType= 'TAIR',
+                           ont = 'BP',
+                           universe = keys(org.At.tair.db),
+                           pAdjustMethod = 'BH',
+                           pvalueCutoff=0.05,
+                           qvalueCutoff=0.1)
+
+dotplot(kallGOBP, showCategory = 20, font.size = 8)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
