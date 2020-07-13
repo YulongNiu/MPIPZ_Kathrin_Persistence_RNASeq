@@ -15,10 +15,10 @@
 
 * Kathrin
 
-![kmeans_10_ath_heatmap_sig2](kmeans_10_ath_heatmap_sig2.jpg)
+![kmeans_10_ath_heatmap_sig2](results_rmfull/kmeans_10_ath_heatmap_sig2.jpg)
 
 * Ka-Wai
 
-![kmeans10_heatmap_soil_sig2](kmeans10_heatmap_soil_sig2.jpg)
+![kmeans10_heatmap_soil_sig2](results_rmfull/kmeans10_heatmap_soil_sig2.jpg)
 
 
