@@ -22,3 +22,16 @@
 ![kmeans10_heatmap_soil_sig2](results_rmfull/kmeans10_heatmap_soil_sig2.jpg)
 
 
+```
+ Paulo1 Paulo2 Paulo3 Paulo4 Paulo5 Paulo6 Paulo7 Paulo8 Paulo9 Paulo10
+Ka-Wai1       0      0      0      0      0      0      0      0      0       0
+Ka-Wai2       0      0      0      0      0      0      0      0      0       0
+Ka-Wai3       0      0      0      0      0      0      0      0      0       0
+Ka-Wai4       0      0      0      0      0      0      0      0      0       0
+Ka-Wai5       0      0      0      0      0      0      0      0      0       0
+Ka-Wai6       0      0      0      0      0      0      0      0      0       0
+Ka-Wai7       0      0      0      0      0      0      0      0      0       0
+Ka-Wai8       0      0      0      0      0      0      0      0      0       0
+Ka-Wai9       0      0      0      0      0      0      0      0      0       0
+Ka-Wai10      0      0      0      0      0      0      0      0      0       0
+```
