@@ -21,6 +21,9 @@
 
 ![kmeans10_heatmap_soil_sig2](results_rmfull/kmeans10_heatmap_soil_sig2.jpg)
 
+* GO BP enrichment
+
+![kmeans10_ath_cp_BP_dotplot_15_DEG](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_DEG.jpg)
 
 ```
          Paulo1 Paulo2 Paulo3 Paulo4 Paulo5 Paulo6 Paulo7 Paulo8 Paulo9 Paulo10
@@ -37,6 +40,10 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 ```
 
 ### 1.2 All genes
+
+* GO BP enrichment
+
+![kmeans10_ath_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_allgene.jpg)
 
 ```
          Paulo1 Paulo2 Paulo3 Paulo4 Paulo5 Paulo6 Paulo7 Paulo8 Paulo9 Paulo10

@@ -183,16 +183,16 @@ dev.off()
 library('clusterProfiler')
 library('org.At.tair.db')
 
-kall <- lapply(kmeansRes$cl %>% unique, function(x) {
+kall <- lapply(scaleC$cl %>% unique, function(x) {
 
-  eachG <- kmeansRes %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unlist %>% unique
+  eachG <- scaleC %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unlist %>% unique
 
   return(eachG)
 
 }) %>%
-  set_names(kmeansRes$cl %>% unique %>% paste0('cluster', .))
+  set_names(scaleC$cl %>% unique %>% paste0('cluster', .))
 
-kallGOBP <- compareCluster(geneCluster = kall[1],
+kallGOBP <- compareCluster(geneCluster = kall,
                            fun = 'enrichGO',
                            OrgDb = 'org.At.tair.db',
                            keyType= 'TAIR',
@@ -202,5 +202,18 @@ kallGOBP <- compareCluster(geneCluster = kall[1],
                            pvalueCutoff=0.05,
                            qvalueCutoff=0.1)
 
-dotplot(kallGOBP, showCategory = 20, font.size = 8)
+enrichGO(gene = kall[[5]],
+         OrgDb = 'org.At.tair.db',
+         keyType= 'TAIR',
+         ont = 'BP',
+         universe = keys(org.At.tair.db),
+         pAdjustMethod = 'BH',
+         pvalueCutoff=0.05,
+         qvalueCutoff=0.1) %>%
+  as.data.frame %>%
+  head
+
+dotplot(kallGOBP, showCategory = 15, font.size = 8)
+ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.jpg', width = 13, height = 12)
+ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.pdf', width = 13, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
