@@ -58,7 +58,7 @@ KaWaiDEG <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/removeZero/k
   select(ID, cl)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~compare DEGs~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
 
   KathrinEach <- KathrinDEG %>%
@@ -84,4 +84,39 @@ KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
 } %>%
   set_rownames(paste0('Ka-Wai', 1:10)) %>%
   round(digits = 3)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~compare all genes~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+KathrinAll <- read_csv('kmeans_10_ath.csv') %>%
+  select(ID, cl)
+
+KaWaiAll <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/removeZero/kmeans10_soil.csv') %>%
+  select(ID, cl)
+
+KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
+
+  KathrinEach <- KathrinAll %>%
+    filter(cl == i) %>%
+    .$ID %>%
+    substr(start = 1, stop = nchar(.) - 2) %>%
+    unique
+
+  JacSim <- foreach(j = 1:10, .combine = c)  %do% {
+    KaWaiEach <- KaWaiAll %>%
+      filter(cl == j) %>%
+      .$ID %>%
+      unique
+
+    eachJacSim <- length(intersect(KathrinEach, KaWaiEach)) / length(union(KathrinEach, KaWaiEach))
+
+    return(eachJacSim)
+
+  } %>%
+  set_names(paste0('Paulo', 1:10))
+
+  return(JacSim)
+} %>%
+  set_rownames(paste0('Ka-Wai', 1:10)) %>%
+  round(digits = 3)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################
