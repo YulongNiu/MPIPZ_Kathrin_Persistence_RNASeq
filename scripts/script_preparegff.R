@@ -9,7 +9,9 @@ library('readr')
 library('dplyr')
 library('magrittr')
 
-gffPath <- '/extDisk1/Biotools/RefData/lotus_gifu_collaborator_v1.2/20190809_Lj_Gifu_v1.2_predictedGenes.gff3'
+## gffPath <- '/extDisk1/Biotools/RefData/lotus_gifu_collaborator_v1.2/20190809_Lj_Gifu_v1.2_predictedGenes.gff3'
+gffPath <- '/extDisk1/Biotools/RefData/lotus_gifu_collaborator_v1.2/Lotusjaponicus_Gifu_v1.2_predictedGenes.gff3.gz'
+
 gffAnno <- read_tsv(gffPath,
                     col_names = c('chromosome', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute'),
                     col_types = cols(chromosome = col_character()),
@@ -43,7 +45,7 @@ geneTable <- tibble(ID = str_extract(noteAnno, '(?<=ID=).*?(?=;)'),
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-write_csv(geneTable, '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_v1p2_Anno.csv')
+write_csv(geneTable, '/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_Anno_July15.csv')
 
 ##~~~~~~~~~~~~~~~~~~check cDNA in k~~~~~~~~~~~~~~~~~~~~~~~~~~~
 kcDNA <- read_tsv('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/align_data/lotus_collaborator/L_mock_4_lotus_kallisto//abundance.tsv')
