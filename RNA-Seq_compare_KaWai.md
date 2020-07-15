@@ -4,12 +4,15 @@
 
 **Table of Contents**
 
-- [1. Cluster](#1-cluster)
+- [1. ClusterAt](#1-clusterat)
     - [1.1 DEGs](#11-degs)
     - [1.2 All genes](#12-all-genes)
+- [2. ClusterLj](#1-clusterlj)
+    - [2.1 Remove fullSynCom](#21-remove-fullsyncom)
+    - [2.2 Remove fullSynCom AtSynCom](#22-remove-fullsyncom-atsyncom)
 <!-- content end -->
 
-## 1. Cluster
+## 1. ClusterAt
 
 ### 1.1 DEGs
 
@@ -26,7 +29,7 @@
 ![kmeans10_ath_cp_BP_dotplot_15_DEG](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_DEG.jpg)
 
 ```
-         Paulo1 Paulo2 Paulo3 Paulo4 Paulo5 Paulo6 Paulo7 Paulo8 Paulo9 Paulo10
+         Kathrin1 Kathrin2 Kathrin3 Kathrin4 Kathrin5 Kathrin6 Kathrin7 Kathrin8 Kathrin9 Kathrin10
 Ka-Wai1       0      0      0      0      0      0      0      0      0       0
 Ka-Wai2       0      0      0      0      0      0      0      0      0       0
 Ka-Wai3       0      0      0      0      0      0      0      0      0       0
@@ -46,7 +49,7 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 ![kmeans10_ath_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_allgene.jpg)
 
 ```
-         Paulo1 Paulo2 Paulo3 Paulo4 Paulo5 Paulo6 Paulo7 Paulo8 Paulo9 Paulo10
+         Kathrin1 Kathrin2 Kathrin3 Kathrin4 Kathrin5 Kathrin6 Kathrin7 Kathrin8 Kathrin9 Kathrin10
 Ka-Wai1       0      0      0      0      0      0      0      0      0       0
 Ka-Wai2       0      0      0      0      0      0      0      0      0       0
 Ka-Wai3       0      0      0      0      0      0      0      0      0       0
@@ -59,5 +62,16 @@ Ka-Wai9       0      0      0      0      0      0      0      0      0       0
 Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 ```
 
+## 2. ClusterLj
 
+### 2.1 Remove fullSynCom
 
+* GO BP enrichment
+
+![kmeans10_rmfullSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfullSC_cp_BP_dotplot_15_allgene.jpg)
+
+### 2.2 Remove fullSynCom AtSynCom
+
+* GO BP enrichment
+
+![kmeans10_rmfull_rmAtSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfull_rmAtSC_cp_BP_dotplot_15_allgene.jpg)

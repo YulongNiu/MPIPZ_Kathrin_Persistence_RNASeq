@@ -1,0 +1,14 @@
+Package: org.Ljaponicus.eg.db
+Title: Genome wide annotation for Lotus japonicus
+Description: Genome wide annotation for Lotus japonicus, primarily based on mapping using Entrez Gene identifiers.
+Version: 0.1
+Author: Yulong Niu <yulong.niu@hotmail.com>
+Maintainer: Yulong Niu <yulong.niu@hotmail.com>
+Depends: R (>= 2.7.0), methods, AnnotationDbi (>= 1.50.1)
+Suggests: DBI, annotate, RUnit
+Imports: methods, AnnotationDbi
+License: Artistic-2.0
+organism: Lotus japonicus
+species: Lotus japonicus
+biocViews: OrgDb, annotation
+

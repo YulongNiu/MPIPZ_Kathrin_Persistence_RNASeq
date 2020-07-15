@@ -78,7 +78,7 @@ KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
     return(eachJacSim)
 
   } %>%
-  set_names(paste0('Paulo', 1:10))
+  set_names(paste0('Kathrin', 1:10))
 
   return(JacSim)
 } %>%
@@ -112,7 +112,7 @@ KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
     return(eachJacSim)
 
   } %>%
-  set_names(paste0('Paulo', 1:10))
+  set_names(paste0('Kathrin', 1:10))
 
   return(JacSim)
 } %>%

@@ -63,6 +63,52 @@ Heatmap(matrix = scaleC %>% select(contains('L_')),
 dev.off()
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##~~~~~~~~~~~~~~~~~~~~~~~~~GO analysis~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## GO analysis
+library('clusterProfiler')
+library('org.Ljaponicus.eg.db')
+lotusGOBP <- read_csv('../results/lotus_GO_BP.csv') %>%
+  dplyr::select(GO, GID)
+
+kall <- lapply(scaleC$cl %>% unique, function(x) {
+
+  eachG <- scaleC %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unique
+
+  return(eachG)
+
+}) %>%
+  set_names(scaleC$cl %>% unique %>% paste0('cluster', .))
+
+kallGOBP <- compareCluster(geneCluster = kall,
+                           fun = 'enrichGO',
+                           OrgDb = 'org.Ljaponicus.eg.db',
+                           keyType= 'GID',
+                           ont = 'BP',
+                           universe = keys(org.Ljaponicus.eg.db),
+                           pAdjustMethod = 'BH',
+                           pvalueCutoff=0.05,
+                           qvalueCutoff=0.1)
+
+enrichGO(gene = kall[[4]],
+         OrgDb = 'org.Ljaponicus.eg.db',
+         keyType= 'GID',
+         ont = 'BP',
+         universe = keys(org.Ljaponicus.eg.db),
+         pAdjustMethod = 'BH',
+         pvalueCutoff=0.05,
+         qvalueCutoff=0.1) %>%
+  as.data.frame %>%
+  head
+
+## enricher(gene = kall[[1]],
+##          TERM2GENE = lotusGOBP,
+##          universe = keys(org.Ljaponicus.eg.db))
+
+dotplot(kallGOBP, showCategory = 15, font.size = 8)
+ggsave('kmeans10_rmAtSC_cp_BP_dotplot_15_allgene.jpg', width = 13, height = 12)
+ggsave('kmeans10_rmAtSC_cp_BP_dotplot_15_allgene.pdf', width = 13, height = 12)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~box plot~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 sampleN <- c('AtSC', 'AtSC+LjNodule218', 'LjSC', 'Mock+LjNodule218')
