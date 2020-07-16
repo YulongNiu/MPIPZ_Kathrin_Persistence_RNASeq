@@ -63,23 +63,9 @@ write_csv(fGO %>% dplyr::filter(Aspect == 'P'), 'lotus_GO_BP.csv')
 
 
 ########################prepare Lotus GO gene level#################
-## ## no Lotus japonicus Gifu
-## library('AnnotationHub')
-## hub <- AnnotationHub()
-
 library('tidyverse')
 library('magrittr')
 library('AnnotationForge')
-
-## from NCBI
-## not Gifu !!!
-## makeOrgPackageFromNCBI(version = '0.1',
-##                                author = 'Some One <so@someplace.org>',
-##                                maintainer = 'Some One <so@someplace.org>',
-##                                outputDir = '.',
-##                                tax_id = '34305',
-##                                genus = 'Lotus',
-##                                species = 'corniculatus')
 
 setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results')
 
@@ -131,4 +117,105 @@ makeOrgPackage(gene_info = fSym %>% dplyr::rename(GID = GENE),
                goTable = 'go')
 
 write_csv(fGO %>% dplyr::filter(Aspect == 'P'), 'lotus_GO_BP.csv')
+########################################################################
+
+
+############################Lotus from besthit##########################
+library('tidyverse')
+library('doParallel')
+library('magrittr')
+library('GO.db')
+library('org.At.tair.db')
+library('AnnotationForge')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results')
+
+lotusAnno <- read_tsv('/extDisk1/Biotools/RefData/lotus_gifu_collaborator_v1.2/LjGifu_1.2_functional_annotation.txt', comment = '#') %>%
+  dplyr::select(`Protein-Accession`, `Best BlastHit against 'tair'`, `Human-Readable-Description`) %>%
+  set_colnames(c('GID', 'TAIR', 'GENENAME')) %>%
+  dplyr::mutate(TAIR = TAIR %>% strsplit(split = ' ', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::mutate(TAIRGene = TAIR %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1))
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TAIR GO~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+xx <- org.At.tairGO %>%
+  as.list %>% {
+
+    keepIdx <- lapply(., is.na) %>% sapply(sum) %>% is_greater_than(0) %>% not
+
+    return(.[keepIdx])
+  }
+
+xx <- lotusAnno$TAIRGene %>%
+  unique %>%
+  {.[!is.na(.)]} %>%
+  {xx[match(., names(xx))]}
+
+CollpaseEachGO <- function(eachGOList, geneID) {
+
+  require('foreach')
+  require('tidyverse')
+
+  res <- foreach(i = seq_along(eachGOList), .combine = bind_rows) %do% {
+    return(unlist(eachGOList[[i]]))
+  } %>%
+  bind_rows %>%
+  mutate(GeneID = geneID)
+
+  return(res)
+}
+
+## Time consuming
+registerDoParallel(cores = 12)
+
+## foreach(i = 1:500, .combine = bind_rows) %dopar% {
+##   res <- CollpaseEachGO(xx[[i]], names(xx)[i])
+## }
+
+TAIRGO <- foreach(i = seq_along(xx), .combine = bind_rows) %dopar% {
+  res <- CollpaseEachGO(xx[[i]], names(xx)[i])
+}
+
+TAIRGO %<>%
+  dplyr::select(GOID, GeneID, Evidence) %>%
+  distinct
+stopImplicitCluster()
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+fGO <- inner_join(lotusAnno, TAIRGO, by = c('TAIRGene' = 'GeneID')) %>%
+  dplyr::mutate(GID = GID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::mutate(Evidence = 'ISS') %>%
+  dplyr::rename(GO = GOID, EVIDENCE = Evidence) %>%
+  dplyr::select(GID, GO, EVIDENCE) %>%
+  distinct
+
+fSym <- lotusAnno %>%
+  dplyr::mutate(GID = GID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::select(GID, GENENAME) %>%
+  dplyr::slice(.$GID %>% duplicated %>% not %>% which) %>%
+  distinct
+
+## chromosome
+fChr <- read_csv('lotus_gifu_collaborator_Anno_July15.csv') %>%
+  dplyr::select(ID, Chromosome) %>%
+  set_colnames(c('TRANSCRIPT', 'CHROMOSOME')) %>%
+  dplyr::mutate(GID = TRANSCRIPT %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::select(-TRANSCRIPT) %>%
+  distinct %>%
+  {inner_join(fSym, .)} %>%
+  dplyr::select(GID, CHROMOSOME) %>%
+  distinct
+
+inner_join(fChr, fGO)
+
+makeOrgPackage(gene_info = fSym,
+               chromosome = fChr,
+               go = fGO,
+               version = '0.1',
+               maintainer = 'Yulong Niu <yulong.niu@hotmail.com>',
+               author = 'Yulong Niu <yulong.niu@hotmail.com>',
+               outputDir = '.',
+               tax_id = 'Gifu',
+               genus = 'Lotus',
+               species = 'japonicus',
+               goTable = 'go')
 ########################################################################

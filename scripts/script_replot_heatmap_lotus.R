@@ -26,13 +26,13 @@ meanFe <- function(v) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~heatmap all transcripts~~~~~~~~~~~~~~~~
-kmeansRes <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
   select(ID, cl)
 
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
-  .[, c(-1:-4)] %>%
+  .[, c(-1:-8)] %>%
   rownames_to_column('ID') %>%
   as_tibble %>%
   inner_join(kmeansRes %>% select(ID, cl))
@@ -67,6 +67,7 @@ dev.off()
 ## GO analysis
 library('clusterProfiler')
 library('org.Ljaponicus.eg.db')
+
 lotusGOBP <- read_csv('../results/lotus_GO_BP.csv') %>%
   dplyr::select(GO, GID)
 
@@ -105,8 +106,8 @@ enrichGO(gene = kall[[4]],
 ##          universe = keys(org.Ljaponicus.eg.db))
 
 dotplot(kallGOBP, showCategory = 15, font.size = 8)
-ggsave('kmeans10_rmAtSC_cp_BP_dotplot_15_allgene.jpg', width = 13, height = 12)
-ggsave('kmeans10_rmAtSC_cp_BP_dotplot_15_allgene.pdf', width = 13, height = 12)
+ggsave('kmeans10_rmfull_rmAtSC_cp_BP_besthit_dotplot_15_allgene.jpg', width = 13, height = 12)
+ggsave('kmeans10_rmfull_rmAtSC_cp_BP_besthit_dotplot_15_allgene.pdf', width = 13, height = 12)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 

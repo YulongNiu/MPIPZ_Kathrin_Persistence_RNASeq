@@ -66,12 +66,22 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 ### 2.1 Remove fullSynCom
 
-* GO BP enrichment
+* GO BP enrichment with raw GO anno
 
 ![kmeans10_rmfullSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfullSC_cp_BP_dotplot_15_allgene.jpg)
 
+
+* GO BP enrichment with besthit GO anno
+
+![kmeans10_rmfullSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfullSC_cp_BP_besthit_dotplot_15_allgene.jpg)
+
 ### 2.2 Remove fullSynCom AtSynCom
 
-* GO BP enrichment
+* GO BP enrichment with GO anno
 
 ![kmeans10_rmfull_rmAtSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfull_rmAtSC_cp_BP_dotplot_15_allgene.jpg)
+
+
+* GO BP enrichment with besthit GO anno
+
+![kmeans10_rmfull_rmAtSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfull_rmAtSC_cp_BP_besthit_dotplot_15_allgene.jpg)
