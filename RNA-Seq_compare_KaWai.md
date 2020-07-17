@@ -66,6 +66,10 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 ### 2.1 Remove fullSynCom
 
+* Heatmap with DEGs
+
+![kmeans_10_lotus_heatmap_sig2](results_rmfull/kmeans_10_lotus_heatmap_sig2.jpg)
+
 * GO BP enrichment with raw GO anno
 
 ![kmeans10_rmfullSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfullSC_cp_BP_dotplot_15_allgene.jpg)
@@ -76,6 +80,10 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 ![kmeans10_rmfullSC_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_rmfullSC_cp_BP_besthit_dotplot_15_allgene.jpg)
 
 ### 2.2 Remove fullSynCom AtSynCom
+
+* Heatmap with DEGs
+
+![kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2](results_rmfull/kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2.jpg)
 
 * GO BP enrichment with GO anno
 
