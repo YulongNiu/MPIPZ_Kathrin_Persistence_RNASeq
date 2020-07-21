@@ -48,6 +48,18 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 ![kmeans10_ath_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_allgene.jpg)
 
+At cluster2 --> boxplot of Lj
+
+* ![At_cl2_lotus_scale](results_rmfull/At_cl2_lotus_scale.jpg)
+
+At cluster4 --> boxplot of Lj
+
+* ![At_cl4_lotus_scale](results_rmfull/At_cl4_lotus_scale.jpg)
+
+At cluster3/5 --> boxplot of Lj
+
+* ![At_cl35_lotus_scale](results_rmfull/At_cl35_lotus_scale.jpg)
+
 ```
          Kathrin1 Kathrin2 Kathrin3 Kathrin4 Kathrin5 Kathrin6 Kathrin7 Kathrin8 Kathrin9 Kathrin10
 Ka-Wai1       0      0      0      0      0      0      0      0      0       0
