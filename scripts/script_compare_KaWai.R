@@ -120,3 +120,99 @@ KathrinKaWaiJS <- foreach (i = 1:10, .combine = rbind) %do% {
   round(digits = 3)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################
+
+
+###########################At GO --> Lotus##############################
+## AtSC LjSC Mock
+## all gene clusters:
+## c2: up-regulated in both AtSC and LjSC
+## c4: down-regulated in both AtSC and LjSC, LjSC more
+## c3 and c5: up-regulated in only AtSC
+
+meanLotus <- function(v) {
+
+  require('magrittr')
+
+  res <- v %>%
+    split(rep(1 : 4, each = 4)) %>%
+    sapply(mean, na.rm = TRUE)
+
+  return(res)
+}
+
+library('tidyverse')
+library('magrittr')
+library('ggplot2')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
+
+AtCluster <- read_csv('kmeans_10_ath.csv') %>%
+  select(ID, cl) %>%
+  mutate(TAIRGene =  ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  rename(TAIR = ID)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~load Lotus~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+load('degres_condi_Mock_lotus.RData')
+
+rawC <- rldData %>%
+  as.data.frame %>%
+  .[, c(-1 : -4)] %>%
+  rownames_to_column('ID') %>%
+  as_tibble
+
+LjScale <- rawC %>%
+  select(-ID) %>%
+  t %>%
+  scale %>%
+  t %>%
+  as_tibble %>%
+  bind_cols(rawC %>% select(ID))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+lotusAnno <- read_tsv('/extDisk1/Biotools/RefData/lotus_gifu_collaborator_v1.2/LjGifu_1.2_functional_annotation.txt', comment = '#') %>%
+  dplyr::select(`Protein-Accession`, `Best BlastHit against 'tair'`, `Human-Readable-Description`) %>%
+  set_colnames(c('GID', 'TAIR', 'GENENAME')) %>%
+  dplyr::mutate(TAIR = TAIR %>% strsplit(split = ' ', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::mutate(TAIRGene = TAIR %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1))
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~select cluster~~~~~~~~~~~~~~~~~~~~~~~~
+clNum <- c(3, 5)
+
+lotusBH <- AtCluster %>%
+  filter(cl %in% clNum) %>%
+  select(TAIRGene) %>%
+  distinct %>%
+  inner_join(lotusAnno) %>%
+  select(GID, GENENAME) %>%
+  distinct %>%
+  mutate(GGene = GID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1))
+
+## library('clusterProfiler')
+## library('org.Ljaponicus.eg.db')
+
+## enrichGO(gene = lotusBH$GGene,
+##          OrgDb = 'org.Ljaponicus.eg.db',
+##          keyType= 'GID',
+##          ont = 'BP',
+##          universe = keys(org.Ljaponicus.eg.db),
+##          pAdjustMethod = 'BH',
+##          pvalueCutoff=0.05,
+##          qvalueCutoff=0.1) %>%
+##   as.data.frame %>%
+##   .[, 2]
+
+lotusBH %>%
+  select(GID) %>%
+  inner_join(LjScale, c('GID' = 'ID')) %>%
+  select(-GID) %>%
+  apply(1, meanLotus) %>%
+  t %>%
+  as_tibble %>%
+  set_colnames(c('L_AtSC', 'L_AtSCMloti', 'L_LjSC', 'L_mock')) %>%
+  gather(key = 'Sample', value = 'ScaleC') %>%
+  ggplot(aes(x = Sample, y = ScaleC)) +
+  geom_boxplot()
+
+ggsave('At_cl35_lotus_scale.jpg')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+########################################################################
