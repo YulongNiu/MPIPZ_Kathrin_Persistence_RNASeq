@@ -48,17 +48,21 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 ![kmeans10_ath_cp_BP_dotplot_15_allgene](results_rmfull/kmeans10_ath_cp_BP_dotplot_15_allgene.jpg)
 
-At cluster2 --> boxplot of Lj
+* At cluster2 --> boxplot of Lj
 
-* ![At_cl2_lotus_scale](results_rmfull/At_cl2_lotus_scale.jpg)
+![At_cl2_lotus_scale](results_rmfull/At_cl2_lotus_scale.jpg)
 
-At cluster4 --> boxplot of Lj
+* At cluster4 --> boxplot of Lj
 
-* ![At_cl4_lotus_scale](results_rmfull/At_cl4_lotus_scale.jpg)
+![At_cl4_lotus_scale](results_rmfull/At_cl4_lotus_scale.jpg)
 
-At cluster3/5 --> boxplot of Lj
+* At cluster3/5 --> boxplot of Lj
 
-* ![At_cl35_lotus_scale](results_rmfull/At_cl35_lotus_scale.jpg)
+![At_cl35_lotus_scale](results_rmfull/At_cl35_lotus_scale.jpg)
+
+* Select defense related GO terms in At and mapped to Lj
+
+![defense_At2Lj_heatmap](results_rmfull/defense_At2Lj_heatmap.jpg)
 
 ```
          Kathrin1 Kathrin2 Kathrin3 Kathrin4 Kathrin5 Kathrin6 Kathrin7 Kathrin8 Kathrin9 Kathrin10

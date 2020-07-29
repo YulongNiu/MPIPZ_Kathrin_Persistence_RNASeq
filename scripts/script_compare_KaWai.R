@@ -151,6 +151,9 @@ AtCluster <- read_csv('kmeans_10_ath.csv') %>%
   mutate(TAIRGene =  ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1)) %>%
   rename(TAIR = ID)
 
+LjCluster <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
+  dplyr::select(ID, cl)
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~load Lotus~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 load('degres_condi_Mock_lotus.RData')
 
@@ -214,5 +217,45 @@ lotusBH %>%
   geom_boxplot()
 
 ggsave('At_cl35_lotus_scale.jpg')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~defense At --> Lj~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+library('ComplexHeatmap')
+library('RColorBrewer')
+
+GOAtall <- read_csv('kmeans10_ath_cp_BP_allgene.csv')
+
+## At defense related GO BP terms
+defenseAtGO <- c('GO:0010200', 'GO:0034050', 'GO:0002682',
+                 'GO:0034050', 'GO:0009626', 'GO:0045088',
+                 'GO:0050776', 'GO:0012501', 'GO:0010363',
+                 'GO:0043067', 'GO:0080135', 'GO:0060548',
+                 'GO:0002679', 'GO:0045730', 'GO:0009611')
+
+defenseAtGenes <- GOAtall %>%
+  dplyr::filter(ID %in% defenseAtGO) %>%
+  .$geneID %>%
+  strsplit(split = '/', fixed = TRUE) %>%
+  unlist %>%
+  unique %>%
+  bind_cols %>%
+  set_colnames(c('TAIRGene'))
+
+defenseLj <- inner_join(lotusAnno, defenseAtGenes) %>%
+  inner_join(inner_join(LjCluster, LjScale), by = c('GID' = 'ID')) %>%
+  select(-TAIR, -GENENAME, -TAIRGene)
+
+
+cairo_pdf('defense_At2Lj_heatmap.pdf')
+Heatmap(matrix = defenseLj %>% select(contains('_')),
+        name = 'Scaled Counts',
+        ## row_order = order(scaleC$cl) %>% rev,
+        row_split = defenseLj$cl,
+        row_gap = unit(2, "mm"),
+        column_order = 1 : 16,
+        column_split = rep(c('AtSC', 'AtSCMloti', 'LjSC', 'Mock'), each = 4),
+        show_column_names = FALSE,
+        col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10))
+dev.off()
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################

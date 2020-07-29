@@ -183,14 +183,14 @@ dev.off()
 library('clusterProfiler')
 library('org.At.tair.db')
 
-kall <- lapply(scaleC$cl %>% unique, function(x) {
+kall <- lapply(kmeansRes$cl %>% unique, function(x) {
 
-  eachG <- scaleC %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unlist %>% unique
+  eachG <- kmeansRes %>% filter(cl == x) %>% .$ID %>% strsplit(split = '.', fixed = TRUE) %>% sapply('[[', 1) %>% unlist %>% unique
 
   return(eachG)
 
 }) %>%
-  set_names(scaleC$cl %>% unique %>% paste0('cluster', .))
+  set_names(kmeansRes$cl %>% unique %>% paste0('cluster', .))
 
 kallGOBP <- compareCluster(geneCluster = kall,
                            fun = 'enrichGO',
@@ -216,4 +216,6 @@ enrichGO(gene = kall[[5]],
 dotplot(kallGOBP, showCategory = 15, font.size = 8)
 ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.jpg', width = 13, height = 12)
 ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.pdf', width = 13, height = 12)
+
+write_csv(as.data.frame(kallGOBP), 'kmeans10_ath_cp_BP_allgene.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
