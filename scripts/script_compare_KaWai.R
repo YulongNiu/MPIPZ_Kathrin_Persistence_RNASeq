@@ -241,6 +241,8 @@ defenseAtGenes <- GOAtall %>%
   bind_cols %>%
   set_colnames(c('TAIRGene'))
 
+
+## Lj cluster number
 defenseLj <- inner_join(lotusAnno, defenseAtGenes) %>%
   inner_join(inner_join(LjCluster, LjScale), by = c('GID' = 'ID')) %>%
   select(-TAIR, -GENENAME, -TAIRGene)
@@ -257,5 +259,24 @@ Heatmap(matrix = defenseLj %>% select(contains('_')),
         show_column_names = FALSE,
         col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10))
 dev.off()
+
+## Lj with At cluster number
+defenseLj <- inner_join(lotusAnno, defenseAtGenes) %>%
+  inner_join(inner_join(AtCluster, defenseAtGenes)) %>%
+  inner_join(LjScale, by = c('GID' = 'ID')) %>%
+  select(-TAIR, -GENENAME, -TAIRGene)
+
+cairo_pdf('defense_At2Lj_AtclusterID_heatmap.pdf')
+Heatmap(matrix = defenseLj %>% select(contains('_')),
+        name = 'Scaled Counts',
+        ## row_order = order(scaleC$cl) %>% rev,
+        row_split = defenseLj$cl,
+        row_gap = unit(2, "mm"),
+        column_order = 1 : 16,
+        column_split = rep(c('AtSC', 'AtSCMloti', 'LjSC', 'Mock'), each = 4),
+        show_column_names = FALSE,
+        col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -7, -8)])(10))
+dev.off()
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################

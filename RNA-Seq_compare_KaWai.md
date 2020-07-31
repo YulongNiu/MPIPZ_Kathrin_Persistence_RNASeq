@@ -64,6 +64,10 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 ![defense_At2Lj_heatmap](results_rmfull/defense_At2Lj_heatmap.jpg)
 
+* Select defense related GO terms in At and mapped to Lj with At cluster ID
+
+![defense_At2Lj_AtclusterID_heatmap](results_rmfull/defense_At2Lj_AtclusterID_heatmap.jpg)
+
 ```
          Kathrin1 Kathrin2 Kathrin3 Kathrin4 Kathrin5 Kathrin6 Kathrin7 Kathrin8 Kathrin9 Kathrin10
 Ka-Wai1       0      0      0      0      0      0      0      0      0       0
