@@ -26,7 +26,7 @@ meanFe <- function(v) {
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~heatmap all transcripts~~~~~~~~~~~~~~~~
-kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
+kmeansRes <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
   select(ID, cl)
 
 ## rlog transformed

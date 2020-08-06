@@ -218,4 +218,53 @@ ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.jpg', width = 13, height = 12)
 ggsave('kmeans10_ath_cp_BP_dotplot_15_DEG.pdf', width = 13, height = 12)
 
 write_csv(as.data.frame(kallGOBP), 'kmeans10_ath_cp_BP_allgene.csv')
+
+## extract all GO
+library('GO.db')
+library('org.At.tair.db')
+library('magrittr')
+library('foreach')
+library('doParallel')
+
+xx <- as.list(org.At.tairGO) %>% {
+
+    keepIdx <- lapply(., is.na) %>% sapply(sum) %>% is_greater_than(0) %>% not
+
+    return(.[keepIdx])
+  }
+
+CollpaseEachGO <- function(eachGOList, geneID) {
+
+  require('foreach')
+  require('tidyverse')
+
+  res <- foreach(i = seq_along(eachGOList), .combine = bind_rows) %do% {
+    return(unlist(eachGOList[[i]]))
+  } %>%
+    bind_rows %>%
+  mutate(GeneID = geneID)
+
+  return(res)
+}
+
+allGOAnno <- Term(GOTERM) %>%
+  unlist %>%
+  as.data.frame %>%
+  rownames_to_column('GOID') %>%
+  set_colnames(c('GOID', 'Term')) %>%
+  as_tibble
+
+registerDoParallel(cores = 11)
+athGO <- foreach(i = seq_along(xx), .combine = bind_rows) %dopar% {
+  res <- CollpaseEachGO(xx[[i]], names(xx)[i])
+} %>%
+  dplyr::filter(Ontology %in% c('BP')) %>%
+  dplyr::select(-Evidence, -Ontology) %>%
+  dplyr::distinct(GOID, GeneID) %>%
+  dplyr::inner_join(allGOAnno) %>%
+  dplyr::group_by(GeneID) %>%
+  dplyr::summarize_all(~paste(., collapse = ';'))
+stopImplicitCluster()
+
+write_csv(athGO, 'table2_ath_GO_anno.csv')
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
