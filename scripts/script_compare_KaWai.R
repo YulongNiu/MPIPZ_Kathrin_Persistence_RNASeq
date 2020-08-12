@@ -285,6 +285,8 @@ dev.off()
 ###########################select interesting gene#######################
 library('tidyverse')
 library('DESeq2')
+library('magrittr')
+library('ggpubr')
 
 setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
 
@@ -404,4 +406,93 @@ LjG <- bind_rows(LjG1, LjG2) %>%
 
 AtLjG <- inner_join(AtG, LjG, by = c('IDAt' = 'Best_TAIR'))
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~plot~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for (i in seq_len(nrow(AtLjG))) {
+
+  if (nrow(scaleCAt %>%
+           filter(ID %in% AtLjG$IDAt[i])) == 0) {
+    next
+  } else {}
+
+  AtC <- scaleCAt %>%
+    filter(ID %in% AtLjG$IDAt[i]) %>%
+    dplyr::select(contains('_')) %>%
+    t %>%
+    set_colnames('ScaleCounts') %>%
+    bind_cols(SynCom = c('C_AtSC', 'C_LjSC', 'C_mock') %>% rep(each = 4)) %>%
+    mutate(Species = 'At') %>%
+    ggplot(aes(x = SynCom, y = ScaleCounts)) +
+    geom_dotplot(binaxis = 'y', stackdir = 'center') +
+    stat_summary(fun = mean, geom = 'point', shape = 18,
+                 size = 3, color = 'red') +
+    ggtitle(paste0(AtLjG$IDAt[i], '\n', AtLjG$DescriptionAt[i]))
+
+  if (nrow(scaleCLj4 %>%
+           filter(ID %in% AtLjG$IDLj[i])) == 0) {
+    next
+  } else {}
+
+  LjC <- scaleCLj4 %>%
+    filter(ID %in% AtLjG$IDLj[i]) %>%
+    dplyr::select(contains('_')) %>%
+    t %>%
+    set_colnames('ScaleCounts') %>%
+    bind_cols(SynCom = c('L_AtSC', 'L_AtSCMloti', 'L_LjSC', 'L_mock') %>% rep(each = 4)) %>%
+    mutate(Species = 'Lj') %>%
+    ggplot(aes(x = SynCom, y = ScaleCounts)) +
+    geom_dotplot(binaxis = 'y', stackdir = 'center') +
+    stat_summary(fun = mean, geom = 'point', shape = 18,
+                 size = 3, color = 'red') +
+    ggtitle(paste0(AtLjG$IDLj[i], '\n', AtLjG$DescriptionLj[i]))
+
+  g <- ggarrange(AtC, LjC)
+  ggsave(file = paste0('select_gene_At_LjC4/', AtLjG$IDAt[i], '_', AtLjG$IDLj[i], '.jpg'), g)
+
+}
+
+
+for (i in seq_len(nrow(AtLjG))) {
+
+  if (nrow(scaleCAt %>%
+           filter(ID %in% AtLjG$IDAt[i])) == 0) {
+    next
+  } else {}
+
+  AtC <- scaleCAt %>%
+    filter(ID %in% AtLjG$IDAt[i]) %>%
+    dplyr::select(contains('_')) %>%
+    t %>%
+    set_colnames('ScaleCounts') %>%
+    bind_cols(SynCom = c('C_AtSC', 'C_LjSC', 'C_mock') %>% rep(each = 4)) %>%
+    mutate(Species = 'At') %>%
+    ggplot(aes(x = SynCom, y = ScaleCounts)) +
+    geom_dotplot(binaxis = 'y', stackdir = 'center') +
+    stat_summary(fun = mean, geom = 'point', shape = 18,
+                 size = 3, color = 'red') +
+    ggtitle(paste0(AtLjG$IDAt[i], '\n', AtLjG$DescriptionAt[i]))
+
+  if (nrow(scaleCLj4 %>%
+           filter(ID %in% AtLjG$IDLj[i])) == 0) {
+    next
+  } else {}
+
+  LjC <- scaleCLj3 %>%
+    filter(ID %in% AtLjG$IDLj[i]) %>%
+    dplyr::select(contains('_')) %>%
+    t %>%
+    set_colnames('ScaleCounts') %>%
+    bind_cols(SynCom = c('L_AtSCMloti', 'L_LjSC', 'L_mock') %>% rep(each = 4)) %>%
+    mutate(Species = 'Lj') %>%
+    ggplot(aes(x = SynCom, y = ScaleCounts)) +
+    geom_dotplot(binaxis = 'y', stackdir = 'center') +
+    stat_summary(fun = mean, geom = 'point', shape = 18,
+                 size = 3, color = 'red') +
+    ggtitle(paste0(AtLjG$IDLj[i], '\n', AtLjG$DescriptionLj[i]))
+
+  g <- ggarrange(AtC, LjC)
+  ggsave(file = paste0('select_gene_At_LjC3/', AtLjG$IDAt[i], '_', AtLjG$IDLj[i], '.jpg'), g)
+
+}
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #########################################################################
