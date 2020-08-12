@@ -30,12 +30,6 @@ kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
   mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
   select(ID, cl)
 
-## select WRKY
-read_csv('kmeans_10_lotus_collaborator.csv') %>%
-  mutate_at(c('Best_sport', 'Description'), list(~replace(., is.na(.), ''))) %>%
-  filter_at(c('Best_sport', 'Description'), ~str_detect(., 'WRKY')) %>%
-  write_csv('lotus_4condi_WRKY.csv')
-
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
@@ -48,7 +42,7 @@ scaleC <- rawC %>%
   select(contains('L_')) %>%
   t %>%
   scale %>%
-  t %>%q
+  t %>%
   as_tibble %>%
   bind_cols(rawC %>% select(ID, cl))
 

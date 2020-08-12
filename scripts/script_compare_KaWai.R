@@ -280,3 +280,98 @@ dev.off()
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ########################################################################
+
+
+###########################select interesting gene#######################
+library('tidyverse')
+library('DESeq2')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/')
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~select ath~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+load('degres_condi_Mock_ath.RData')
+
+kmeansRes <- read_csv('kmeans_10_ath.csv') %>%
+  mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  select(ID, cl)
+
+## rlog transformed
+rawC <- rldData %>%
+  as.data.frame %>%
+  .[, c(5:16)] %>%
+  rownames_to_column('ID') %>%
+  as_tibble %>%
+  inner_join(kmeansRes %>% select(ID, cl))
+
+scaleCAt <- rawC %>%
+  select(contains('C_')) %>%
+  t %>%
+  scale %>%
+  t %>%
+  as_tibble %>%
+  bind_cols(rawC %>% select(ID, cl))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~select lotus~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+load('degres_condi_Mock_lotus.RData')
+
+kmeansRes <- read_csv('kmeans_10_lotus_rmfull_rmAtSC.csv') %>%
+  mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  select(ID, cl)
+
+## rlog transformed
+rawC <- rldData %>%
+  as.data.frame %>%
+  .[, c(-1:-8)] %>%
+  rownames_to_column('ID') %>%
+  as_tibble %>%
+  inner_join(kmeansRes %>% select(ID, cl))
+
+scaleCLj3 <- rawC %>%
+  select(contains('L_')) %>%
+  t %>%
+  scale %>%
+  t %>%
+  as_tibble %>%
+  bind_cols(rawC %>% select(ID, cl))
+
+kmeansRes <- read_csv('kmeans_10_lotus_collaborator.csv') %>%
+  mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  select(ID, cl)
+
+## rlog transformed
+rawC <- rldData %>%
+  as.data.frame %>%
+  .[, c(-1:-4)] %>%
+  rownames_to_column('ID') %>%
+  as_tibble %>%
+  inner_join(kmeansRes %>% select(ID, cl))
+
+scaleCLj4 <- rawC %>%
+  select(contains('L_')) %>%
+  t %>%
+  scale %>%
+  t %>%
+  as_tibble %>%
+  bind_cols(rawC %>% select(ID, cl))
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~select genes~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## select WRKY
+read_csv('kmeans_10_ath.csv') %>%
+  mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>% {
+    selectIdx <- (str_detect(.$Gene, regex('MYB|WRKY|(^LYK\\d+$)|(^ERF\\d+$)', ignore_case = TRUE)) |
+                  str_detect(.$Description, regex('((^| |//)MYB)|((^| |//)WRKY)|((^| |//)LYK\\d+)|((^| |//)ERF\\d+)', ignore_case = TRUE))) %>%
+      which
+
+    dplyr::slice(., selectIdx)
+  } %>%
+  write_csv('ath_WRKY.csv')
+
+## select WRKY
+read_csv('kmeans_10_lotus_collaborator.csv') %>%
+  mutate_at(c('Best_sport', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  filter_at(c('Best_sport', 'Description'), ~str_detect(., 'WRKY')) %>%
+  write_csv('lotus_4condi_WRKY.csv')
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#########################################################################

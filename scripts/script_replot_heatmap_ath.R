@@ -30,12 +30,6 @@ kmeansRes <- read_csv('kmeans_10_ath.csv') %>%
   mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
   select(ID, cl)
 
-## select WRKY
-read_csv('kmeans_10_ath.csv') %>%
-  mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>%
-  filter_at(c('Gene', 'Description'), ~str_detect(., 'WRKY')) %>%
-  write_csv('ath_WRKY.csv')
-
 ## rlog transformed
 rawC <- rldData %>%
   as.data.frame %>%
