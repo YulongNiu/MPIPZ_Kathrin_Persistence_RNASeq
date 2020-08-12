@@ -357,8 +357,9 @@ scaleCLj4 <- rawC %>%
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~select genes~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## select WRKY
-read_csv('kmeans_10_ath.csv') %>%
+## select genes from At
+AtG <- read_csv('/extDisk1/RESEARCH/MPIPZ_KaWai_RNASeq/results/Ensembl_ath_Anno.csv',
+                col_types = cols(Chromosome = col_character())) %>%
   mutate_at(c('Gene', 'Description'), list(~replace(., is.na(.), ''))) %>% {
     selectIdx <- (str_detect(.$Gene, regex('MYB|WRKY|(^LYK\\d+$)|(^ERF\\d+$)', ignore_case = TRUE)) |
                   str_detect(.$Description, regex('((^| |//)MYB)|((^| |//)WRKY)|((^| |//)LYK\\d+)|((^| |//)ERF\\d+)', ignore_case = TRUE))) %>%
@@ -366,12 +367,41 @@ read_csv('kmeans_10_ath.csv') %>%
 
     dplyr::slice(., selectIdx)
   } %>%
-  write_csv('ath_WRKY.csv')
+  select(ID, Gene, Description) %>%
+  dplyr::rename(IDAt = ID, GeneAt = Gene, DescriptionAt = Description)
 
-## select WRKY
-read_csv('kmeans_10_lotus_collaborator.csv') %>%
-  mutate_at(c('Best_sport', 'Description'), list(~replace(., is.na(.), ''))) %>%
-  filter_at(c('Best_sport', 'Description'), ~str_detect(., 'WRKY')) %>%
-  write_csv('lotus_4condi_WRKY.csv')
+## select genes from At --> Lj
+LjG1 <- read_csv('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_v1p2_Anno.csv',
+                 col_types = cols(Chromosome = col_character())) %>%
+  mutate_at(c('Best_TAIR', 'Best_sport', 'Best_trembl_plants', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  dplyr::filter(nchar(Best_TAIR) > 0) %>%
+  select(ID, Best_TAIR : Description) %>%
+  mutate(Best_TAIR = Best_TAIR %>% strsplit(' ', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::rename(IDLj = ID, DescriptionLj = Description) %>%
+  inner_join(AtG, c('Best_TAIR' = 'IDAt')) %>%
+  dplyr::select(IDLj : DescriptionLj)
+
+## select genes from Lj anno
+LjG2 <- read_csv('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results/lotus_gifu_collaborator_v1p2_Anno.csv',
+                 col_types = cols(Chromosome = col_character())) %>%
+  mutate_at(c('Best_TAIR', 'Best_sport', 'Best_trembl_plants', 'Description'), list(~replace(., is.na(.), ''))) %>%
+  dplyr::filter(nchar(Best_TAIR) > 0) %>%
+  {
+    selectIdx <- (str_detect(.$Best_sport, regex('((^| |//)MYB)|((^| |//)WRKY)|((^| |//)LYK\\d+)|((^| |//)ERF\\d+)', ignore_case = TRUE)) |
+                  str_detect(.$Best_trembl_plants, regex('((^| |//)MYB)|((^| |//)WRKY)|((^| |//)LYK\\d+)|((^| |//)ERF\\d+)', ignore_case = TRUE)) |
+      str_detect(.$Description, regex('((^| |//)MYB)|((^| |//)WRKY)|((^| |//)LYK\\d+)|((^| |//)ERF\\d+)', ignore_case = TRUE))) %>%
+      which
+
+    dplyr::slice(., selectIdx)
+  } %>%
+  dplyr::filter(!is.na(Best_TAIR)) %>%
+  select(ID, Best_TAIR : Description) %>%
+  mutate(Best_TAIR = Best_TAIR %>% strsplit(' ', fixed = TRUE) %>% sapply('[[', 1)) %>%
+  dplyr::rename(IDLj = ID, DescriptionLj = Description)
+
+LjG <- bind_rows(LjG1, LjG2) %>%
+  distinct
+
+AtLjG <- inner_join(AtG, LjG, by = c('IDAt' = 'Best_TAIR'))
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #########################################################################
