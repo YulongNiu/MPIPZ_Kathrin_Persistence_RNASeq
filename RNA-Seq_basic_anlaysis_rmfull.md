@@ -7,6 +7,7 @@
 - [1. Cluster](#1-cluster)
     - [1.1 Arabidopsis](#11-arabidopsis)
     - [1.2 Lotus](#12-lotus)
+    - [1.3 Merge](#13-merge)
 - [2. Orthology mapping](#2-orthology-mapping)
     - [2.1 Orthogroup](#21-orthogroup)
     - [2.2 TAIR Best hit](#22-tair-best-hit)
@@ -81,6 +82,12 @@ PCA plot of auto sva corrected data
 ![kmeans_10_lotus_likeath_heatmap_sig2](results_rmfull/kmeans_10_lotus_heatmap_likeath_sig2.jpg)
 
 ![kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2](results_rmfull/kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2.jpg)
+
+### 1.3 Merge
+
+Use Ka-Wai's Col-0 agar plat RNA-Seq data as the reference. 
+
+![kmeans10_heatmap_agar_soil_kathrin](results_rmfull/kmeans10_heatmap_agar_soil_kathrin.jpg)
 
 ## 2. Orthology mapping
 

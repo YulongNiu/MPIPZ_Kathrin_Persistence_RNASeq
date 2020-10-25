@@ -496,3 +496,74 @@ for (i in seq_len(nrow(AtLjG))) {
 }
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #########################################################################
+
+######################combine Ka-Wai/Kathrin#############################
+library('magrittr')
+library('tidyverse')
+library('ComplexHeatmap')
+library('RColorBrewer')
+
+setwd('/extDisk1/RESEARCH/MPIPZ_Kathrin_Persistence_RNASeq/results_rmfull/compare_Ka-Wai/')
+
+KaWaiAgar <- read_csv('Ka-Wai_Col0_Agar.csv')
+
+col_flg22 <- HeatmapAnnotation(Flg22 = c(rep(c('No', 'Yes'), each = 12),
+                                         rep(c('No', 'Yes', 'No', 'Yes'), each = 4)),
+                               col = list(Flg22 = c('Yes' = 'grey', 'No' = 'white')),
+                               gp = gpar(col = 'black'))
+
+col_syncom <- HeatmapAnnotation(SynCom = c(rep(c('Mock', 'HK', 'Mock', 'HK'), c(4, 8, 4, 8)),
+                                           rep('Live', 16)),
+                                col = list(SynCom = c('Mock' = 'grey80', 'HK' = 'white', 'Live' = 'grey50')),
+                                gp = gpar(col = 'black'))
+
+KaWaiSoil <- read_csv('Ka-Wai_Col0_soil.csv') %>%
+  select(-cl) %>%
+  set_colnames(paste0(colnames(.), '_soil')) %>%
+  left_join(KaWaiAgar, ., c('ID' = 'ID_soil')) %T>% {
+    print(sum(.$ID == KaWaiAgar$ID))
+  }
+
+KathrinSoil <- read_csv('Kathrin_Col0_soil.csv') %>%
+  select(-cl) %>%
+  set_colnames(paste0(colnames(.), '_kathrin')) %>%
+  left_join(KaWaiAgar, ., c('ID' = 'ID_kathrin')) %T>% {
+    print(sum(.$ID == KaWaiAgar$ID))
+  }
+
+ht_list <- Heatmap(matrix = KaWaiAgar %>% select(contains('_')),
+        name = 'KaWaiAgar',
+        ## row_order = order(KaWaiAgar$cl) %>% rev,
+        row_split = KaWaiAgar$cl,
+        row_gap = unit(2, "mm"),
+        column_order = 1 : 40,
+        column_split = rep(c('Mock/HKSynCom', 'Non-sup', 'Sup'), c(24, 8, 8)),
+        show_column_names = FALSE,
+        col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -6, -7)])(100),
+        top_annotation = c(col_flg22, col_syncom),
+        use_raster = FALSE) +
+  Heatmap(matrix = KaWaiSoil %>% select(contains('soil')),
+          name = 'KaWaiSoil',
+          column_order = 1 : 9,
+          column_split = rep(c('Mock', 'Non-sup', 'Sup'), each = 3),
+          show_column_names = FALSE,
+          col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -6, -7)])(100),
+          column_title_gp = gpar(fontsize = 6),
+          use_raster = FALSE) +
+  Heatmap(matrix = KathrinSoil %>% select(contains('kathrin')),
+          name = 'kathrinSoil',
+          column_order = 1 : 12,
+          column_split = rep(c('C_AtSC', 'C_LjSC', 'Mock'), each = 4),
+          show_column_names = FALSE,
+          col = colorRampPalette(rev(brewer.pal(n = 10, name = 'Spectral'))[c(-3, -4, -6, -7)])(100),
+          column_title_gp = gpar(fontsize = 6),
+          use_raster = FALSE)
+
+filePrefix <- 'kmeans10_heatmap_agar_soil_kathrin'
+
+pdf(paste0(filePrefix, '.pdf'))
+draw(ht_list)
+dev.off()
+
+system(paste0('convert -density 1200 ', paste0(filePrefix, '.pdf'), ' ', paste0(filePrefix, '.jpg')))
+#########################################################################
