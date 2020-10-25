@@ -7,6 +7,7 @@
 - [1. ClusterAt](#1-clusterat)
     - [1.1 DEGs](#11-degs)
     - [1.2 All genes](#12-all-genes)
+    - [1.3 Merge](#13-merge)
 - [2. ClusterLj](#1-clusterlj)
     - [2.1 Remove fullSynCom](#21-remove-fullsyncom)
     - [2.2 Remove fullSynCom AtSynCom](#22-remove-fullsyncom-atsyncom)
@@ -81,6 +82,13 @@ Ka-Wai8       0      0      0      0      0      0      0      0      0       0
 Ka-Wai9       0      0      0      0      0      0      0      0      0       0
 Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 ```
+
+### 1.3 Merge
+
+Use Ka-Wai's Col-0 agar plat RNA-Seq data as the reference. 
+
+![kmeans10_heatmap_agar_soil_kathrin](results_rmfull/kmeans10_heatmap_agar_soil_kathrin.jpg)
+
 
 ## 2. ClusterLj
 

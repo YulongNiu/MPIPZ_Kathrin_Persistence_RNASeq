@@ -83,12 +83,6 @@ PCA plot of auto sva corrected data
 
 ![kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2](results_rmfull/kmeans_10_lotus_heatmap_rmfull_rmAtSC_sig2.jpg)
 
-### 1.3 Merge
-
-Use Ka-Wai's Col-0 agar plat RNA-Seq data as the reference. 
-
-![kmeans10_heatmap_agar_soil_kathrin](results_rmfull/kmeans10_heatmap_agar_soil_kathrin.jpg)
-
 ## 2. Orthology mapping
 
 Raw At-transcriptome
