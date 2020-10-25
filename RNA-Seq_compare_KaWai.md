@@ -87,7 +87,7 @@ Ka-Wai10      0      0      0      0      0      0      0      0      0       0
 
 Use Ka-Wai's Col-0 agar plat RNA-Seq data as the reference. 
 
-![kmeans10_heatmap_agar_soil_kathrin](results_rmfull/kmeans10_heatmap_agar_soil_kathrin.jpg)
+![kmeans10_heatmap_agar_soil_kathrin](results_rmfull/compare_Ka-Wai/kmeans10_heatmap_agar_soil_kathrin.jpg)
 
 
 ## 2. ClusterLj
